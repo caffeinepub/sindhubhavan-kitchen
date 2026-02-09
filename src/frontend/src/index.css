@@ -4,80 +4,136 @@
 
 @layer base {
     :root {
-        --radius: 0.625rem;
-        --background: 0.99 0 0;
-        --foreground: 0.15 0 0;
+        --radius: 0.75rem;
+        /* Warm, food-inspired palette - Light Mode */
+        --background: 0.98 0.01 40;
+        --foreground: 0.20 0.02 30;
         --card: 1 0 0;
-        --card-foreground: 0.15 0 0;
+        --card-foreground: 0.20 0.02 30;
         --popover: 1 0 0;
-        --popover-foreground: 0.15 0 0;
-        --primary: 0.55 0.18 35;
-        --primary-foreground: 0.99 0 0;
-        --secondary: 0.96 0.02 85;
-        --secondary-foreground: 0.15 0 0;
-        --muted: 0.96 0.01 85;
-        --muted-foreground: 0.50 0.01 85;
-        --accent: 0.94 0.03 75;
-        --accent-foreground: 0.15 0 0;
-        --destructive: 0.577 0.245 27.325;
-        --destructive-foreground: 0.99 0 0;
-        --border: 0.90 0.01 85;
-        --input: 0.90 0.01 85;
-        --ring: 0.55 0.18 35;
-        --chart-1: 0.55 0.18 35;
-        --chart-2: 0.65 0.15 85;
-        --chart-3: 0.70 0.12 120;
-        --chart-4: 0.60 0.20 15;
-        --chart-5: 0.75 0.10 200;
-        --sidebar: 0.99 0 0;
-        --sidebar-foreground: 0.15 0 0;
-        --sidebar-primary: 0.55 0.18 35;
-        --sidebar-primary-foreground: 0.99 0 0;
-        --sidebar-accent: 0.96 0.02 85;
-        --sidebar-accent-foreground: 0.15 0 0;
-        --sidebar-border: 0.90 0.01 85;
-        --sidebar-ring: 0.55 0.18 35;
+        --popover-foreground: 0.20 0.02 30;
+        /* Rich amber/orange primary - warm and appetizing */
+        --primary: 0.62 0.18 45;
+        --primary-foreground: 0.98 0.01 40;
+        /* Warm terracotta secondary */
+        --secondary: 0.88 0.04 35;
+        --secondary-foreground: 0.25 0.02 30;
+        /* Soft cream muted */
+        --muted: 0.94 0.02 50;
+        --muted-foreground: 0.52 0.03 35;
+        /* Warm peach accent */
+        --accent: 0.85 0.08 50;
+        --accent-foreground: 0.25 0.02 30;
+        --destructive: 0.55 0.22 25;
+        --destructive-foreground: 0.98 0.01 40;
+        --border: 0.88 0.02 40;
+        --input: 0.88 0.02 40;
+        --ring: 0.62 0.18 45;
+        --chart-1: 0.62 0.18 45;
+        --chart-2: 0.70 0.15 30;
+        --chart-3: 0.75 0.12 60;
+        --chart-4: 0.65 0.20 15;
+        --chart-5: 0.80 0.10 80;
+        --sidebar: 0.98 0.01 40;
+        --sidebar-foreground: 0.20 0.02 30;
+        --sidebar-primary: 0.62 0.18 45;
+        --sidebar-primary-foreground: 0.98 0.01 40;
+        --sidebar-accent: 0.94 0.02 50;
+        --sidebar-accent-foreground: 0.25 0.02 30;
+        --sidebar-border: 0.88 0.02 40;
+        --sidebar-ring: 0.62 0.18 45;
     }
 
     .dark {
-        --background: 0.12 0.01 35;
-        --foreground: 0.98 0.01 85;
-        --card: 0.16 0.02 35;
-        --card-foreground: 0.98 0.01 85;
-        --popover: 0.14 0.02 35;
-        --popover-foreground: 0.98 0.01 85;
-        --primary: 0.70 0.20 40;
-        --primary-foreground: 0.12 0.01 35;
-        --secondary: 0.22 0.03 35;
-        --secondary-foreground: 0.98 0.01 85;
-        --muted: 0.22 0.03 35;
-        --muted-foreground: 0.65 0.02 85;
-        --accent: 0.28 0.04 40;
-        --accent-foreground: 0.98 0.01 85;
-        --destructive: 0.60 0.22 25;
-        --destructive-foreground: 0.98 0.01 85;
-        --border: 0.25 0.02 35;
-        --input: 0.25 0.02 35;
-        --ring: 0.70 0.20 40;
-        --chart-1: 0.70 0.20 40;
-        --chart-2: 0.65 0.15 85;
-        --chart-3: 0.70 0.12 120;
-        --chart-4: 0.60 0.20 15;
-        --chart-5: 0.75 0.10 200;
-        --sidebar: 0.16 0.02 35;
-        --sidebar-foreground: 0.98 0.01 85;
-        --sidebar-primary: 0.70 0.20 40;
-        --sidebar-primary-foreground: 0.12 0.01 35;
-        --sidebar-accent: 0.22 0.03 35;
-        --sidebar-accent-foreground: 0.98 0.01 85;
-        --sidebar-border: 0.25 0.02 35;
-        --sidebar-ring: 0.70 0.20 40;
+        /* Warm, cozy dark mode with rich browns and ambers */
+        --background: 0.18 0.03 30;
+        --foreground: 0.95 0.02 50;
+        --card: 0.22 0.04 30;
+        --card-foreground: 0.95 0.02 50;
+        --popover: 0.20 0.04 30;
+        --popover-foreground: 0.95 0.02 50;
+        /* Bright amber primary for dark mode */
+        --primary: 0.72 0.20 50;
+        --primary-foreground: 0.18 0.03 30;
+        /* Warm brown secondary */
+        --secondary: 0.32 0.05 35;
+        --secondary-foreground: 0.95 0.02 50;
+        /* Deep muted brown */
+        --muted: 0.28 0.04 35;
+        --muted-foreground: 0.68 0.03 45;
+        /* Warm accent */
+        --accent: 0.38 0.06 40;
+        --accent-foreground: 0.95 0.02 50;
+        --destructive: 0.58 0.24 25;
+        --destructive-foreground: 0.95 0.02 50;
+        --border: 0.30 0.04 35;
+        --input: 0.30 0.04 35;
+        --ring: 0.72 0.20 50;
+        --chart-1: 0.72 0.20 50;
+        --chart-2: 0.70 0.15 30;
+        --chart-3: 0.75 0.12 60;
+        --chart-4: 0.65 0.20 15;
+        --chart-5: 0.80 0.10 80;
+        --sidebar: 0.22 0.04 30;
+        --sidebar-foreground: 0.95 0.02 50;
+        --sidebar-primary: 0.72 0.20 50;
+        --sidebar-primary-foreground: 0.18 0.03 30;
+        --sidebar-accent: 0.28 0.04 35;
+        --sidebar-accent-foreground: 0.95 0.02 50;
+        --sidebar-border: 0.30 0.04 35;
+        --sidebar-ring: 0.72 0.20 50;
     }
 
     * {
         @apply border-border;
     }
+    
     body {
         @apply bg-background text-foreground;
+        font-feature-settings: "kern" 1, "liga" 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Typography hierarchy */
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-display;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+    }
+
+    h1 {
+        @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+    }
+
+    h2 {
+        @apply text-3xl md:text-4xl font-bold;
+    }
+
+    h3 {
+        @apply text-2xl md:text-3xl font-semibold;
+    }
+
+    p {
+        line-height: 1.7;
+    }
+}
+
+@layer components {
+    /* Elevated card styling */
+    .card-elevated {
+        @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
+    }
+
+    /* Gradient backgrounds */
+    .gradient-warm {
+        background: linear-gradient(135deg, oklch(var(--primary) / 0.1) 0%, oklch(var(--accent) / 0.08) 100%);
+    }
+
+    .gradient-hero {
+        background: linear-gradient(135deg, 
+            oklch(var(--primary) / 0.12) 0%, 
+            oklch(var(--background)) 50%,
+            oklch(var(--accent) / 0.08) 100%);
     }
 }

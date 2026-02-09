@@ -1,4 +1,118 @@
 {
   "kind": "feature_evidence_report",
-  "features": []
+  "features": [
+    {
+      "featureId": "feature-define-and-apply-a-cohesive-modern-warm-culinary-visual-theme-across-the-site-color-palette-typography-sizing-spacing-and-component-styling-to-make-the-website-look-more-polished-and-eye-pleasing-without-changing-app-functionality",
+      "featureTitle": "Define and apply a cohesive, modern “warm culinary” visual theme across the site (color palette, typography, sizing, spacing, and component styling) to make the website look more polished and eye-pleasing, without changing app functionality.",
+      "files": [
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/CheckoutPage.tsx",
+        "frontend/src/pages/ContactPage.tsx",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/MenuPage.tsx",
+        "frontend/src/pages/NotificationsPage.tsx",
+        "frontend/src/pages/OrderHistoryPage.tsx",
+        "frontend/src/pages/OrderTrackingPage.tsx",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-global-theme-tokens-and-base-styles-used-by-tailwind-shadcn-light-dark-mode-so-colors-contrast-borders-and-backgrounds-look-premium-and-consistent-across-the-app",
+      "featureTitle": "Update the global theme tokens and base styles used by Tailwind/Shadcn (light + dark mode) so colors, contrast, borders, and backgrounds look premium and consistent across the app.",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-improve-typography-across-the-site-font-choices-scale-line-height-and-tracking-and-ensure-consistent-heading-body-sizing-on-key-pages-home-menu-checkout-contact-orders-notifications",
+      "featureTitle": "Improve typography across the site (font choices, scale, line-height, and tracking) and ensure consistent heading/body sizing on key pages (Home, Menu, Checkout, Contact, Orders/Notifications).",
+      "files": [
+        "frontend/index.html",
+        "frontend/src/components/Header.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/CheckoutPage.tsx",
+        "frontend/src/pages/ContactPage.tsx",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/MenuPage.tsx",
+        "frontend/src/pages/NotificationsPage.tsx",
+        "frontend/src/pages/OrderHistoryPage.tsx",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-refine-layout-and-visual-polish-of-the-main-shared-ui-areas-header-footer-layout-container-spacing-and-key-page-sections-home-hero-feature-cards-cta-menu-item-cards-and-category-tabs-checkout-summary-and-cart-list-contact-cards-to-look-more-modern-and-designed",
+      "featureTitle": "Refine layout and visual polish of the main shared UI areas (Header, Footer, Layout container spacing) and key page sections (Home hero/feature cards/CTA, Menu item cards and category tabs, Checkout summary and cart list, Contact cards) to look more modern and “designed”.",
+      "files": [
+        "frontend/src/components/Footer.tsx",
+        "frontend/src/components/Header.tsx",
+        "frontend/src/components/Layout.tsx",
+        "frontend/src/pages/CheckoutPage.tsx",
+        "frontend/src/pages/ContactPage.tsx",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/MenuPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "stripe@3.0.0",
+        "http-outcalls@3.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 import Text "mo:core/Text";
 import Nat "mo:core/Nat";
-import Iter "mo:core/Iter";
+import Array "mo:core/Array";
 import List "mo:core/List";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
@@ -16,10 +16,7 @@ import AccessControl "authorization/access-control";
 import Stripe "stripe/stripe";
 import MixinAuthorization "authorization/MixinAuthorization";
 import OutCall "http-outcalls/outcall";
-import Array "mo:core/Array";
-import Migration "migration";
 
-(with migration = Migration.run)
 actor {
   // Include components
   let accessControlState = AccessControl.initState();
@@ -29,7 +26,6 @@ actor {
   var restaurantLocation : Text = "Opposite Coromandal Gate, Sriharipuram, Visakhapatnam, Andhra Pradesh-530011";
   var googleMapsUrl : Text = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d478.7857271870216!2d83.23327778764002!3d17.689073236620935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3943425688726b%3A0x2f18ed0d5ac3db17!2sSriharipuram%2C%20Visakhapatnam%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1716310598853!5m2!1sen!2sin";
 
-  // Types
   public type OrderStatus = {
     #pending;
     #preparing;
@@ -100,19 +96,17 @@ actor {
     allowedCountries : [Text];
   };
 
-  // State
   let menuItems = Map.empty<Nat, MenuItem>();
   let orders = Map.empty<Nat, Order>();
   let users = Map.empty<Principal, Set.Set<Nat>>();
   let documents = Map.empty<Blob, Document>();
   let notifications = Map.empty<Nat, Notification>();
 
-  var nextMenuItemId : Nat = 0;
-  var nextOrderId : Nat = 0;
-  var nextNotificationId : Nat = 0;
+  var nextMenuItemId = 0;
+  var nextOrderId = 0;
+  var nextNotificationId = 0;
   var stripeConfig : ?StripeConfiguration = null;
 
-  // Private helper function to create notifications
   private func createNotification(user : ?Principal, content : Text, notificationType : NotificationType, orderId : ?Nat, orderStatus : ?OrderStatus) {
     let notificationId = nextNotificationId;
     nextNotificationId += 1;
@@ -131,7 +125,6 @@ actor {
     notifications.add(notificationId, notification);
   };
 
-  // Files Functions
   public shared ({ caller }) func addDocument(id : Blob, content : Storage.ExternalBlob, name : Text, size : Nat) : async () {
     if (not AccessControl.isAdmin(accessControlState, caller)) {
       Runtime.trap("Unauthorized: Only admin can upload documents");
@@ -151,7 +144,6 @@ actor {
     switch (documents.get(id)) {
       case (null) { null };
       case (?doc) {
-        // Users can only view their own documents, admins can view all
         if (caller != doc.owner and not AccessControl.isAdmin(accessControlState, caller)) {
           Runtime.trap("Unauthorized: Can only view your own documents");
         };
@@ -167,7 +159,6 @@ actor {
     documents.remove(id);
   };
 
-  // Menu Functions
   public shared ({ caller }) func addMenuItem(name : Text, description : Text, priceInINR : Nat, category : Text, image : ?Storage.ExternalBlob) : async Nat {
     if (not AccessControl.isAdmin(accessControlState, caller)) {
       Runtime.trap("Unauthorized: Only admin can perform this action");
@@ -248,13 +239,11 @@ actor {
     filtered.toArray();
   };
 
-  // New Function: Replace Category Menu Items
   public shared ({ caller }) func replaceCategoryMenuItems(category : Text, newItems : [MenuItem]) : async () {
     if (not AccessControl.isAdmin(accessControlState, caller)) {
       Runtime.trap("Unauthorized: Only admin can replace category menu items");
     };
 
-    // Remove all current category items
     let itemsToRemove = List.empty<Nat>();
     for ((id, item) in menuItems.entries()) {
       if (Text.equal(item.category, category)) {
@@ -265,7 +254,6 @@ actor {
       menuItems.remove(id);
     };
 
-    // Add new category items
     for (item in newItems.values()) {
       let id = nextMenuItemId;
       nextMenuItemId += 1;
@@ -282,7 +270,138 @@ actor {
     };
   };
 
-  // Order Functions
+  public shared ({ caller }) func addStarters() : async () {
+    if (not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Only admin can add starters");
+    };
+
+    let starters = List.empty<MenuItem>();
+
+    starters.add(
+      {
+        id = 0;
+        name = "Veg Manchuria";
+        description = "";
+        priceInINR = 99;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Veg Manchuriya Wet";
+        description = "";
+        priceInINR = 109;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Gobhi Manchuriya";
+        description = "";
+        priceInINR = 109;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Chilli Gobhi";
+        description = "";
+        priceInINR = 109;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Gobhi 65";
+        description = "";
+        priceInINR = 109;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Mushroom Manchuria";
+        description = "";
+        priceInINR = 119;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Mushroom Chilli";
+        description = "";
+        priceInINR = 119;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Paneer Chilli";
+        description = "";
+        priceInINR = 149;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Paneer 65";
+        description = "";
+        priceInINR = 149;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Mushroom Tikka";
+        description = "";
+        priceInINR = 180;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+    starters.add(
+      {
+        id = 0;
+        name = "Paneer Tikka";
+        description = "";
+        priceInINR = 220;
+        category = "Starters";
+        image = null : ?Storage.ExternalBlob;
+        isActive = true;
+      },
+    );
+
+    await replaceCategoryMenuItems("Starters", starters.toArray());
+  };
+
   public shared ({ caller }) func createOrder(order : NewOrder) : async Nat {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only users can create orders");
@@ -303,7 +422,6 @@ actor {
 
     orders.add(id, newOrder);
 
-    // Track customer orders
     switch (users.get(caller)) {
       case (null) {
         let newSet = Set.empty<Nat>();
@@ -315,7 +433,6 @@ actor {
       };
     };
 
-    // Automatically create notification for order placed
     createNotification(
       ?caller,
       "Your order #" # id.toText() # " has been placed successfully. Total: ₹" # order.totalAmountInINR.toText(),
@@ -324,7 +441,6 @@ actor {
       ?#pending
     );
 
-    // Create payment confirmation notification if payment ID exists
     switch (order.paymentId) {
       case (?paymentId) {
         createNotification(
@@ -360,7 +476,6 @@ actor {
         };
         orders.add(orderId, updatedOrder);
 
-        // Automatically create notification for status update
         let statusText = switch (status) {
           case (#pending) { "pending" };
           case (#preparing) { "being prepared" };
@@ -383,7 +498,6 @@ actor {
     switch (orders.get(orderId)) {
       case (null) { Runtime.trap("Order not found") };
       case (?order) {
-        // Users can only view their own order status, admins can view all
         if (caller != order.user and not AccessControl.isAdmin(accessControlState, caller)) {
           Runtime.trap("Unauthorized: Can only view your own order status");
         };
@@ -397,7 +511,6 @@ actor {
       Runtime.trap("Unauthorized: Can only view your own orders");
     };
 
-    // Get order ids for user
     let orderList = List.empty<Order>();
     switch (users.get(user)) {
       case (null) { return [] };
@@ -456,7 +569,6 @@ actor {
     switch (orders.get(orderId)) {
       case (null) { null };
       case (?order) {
-        // Users can only view their own orders, admins can view all
         if (caller != order.user and not AccessControl.isAdmin(accessControlState, caller)) {
           Runtime.trap("Unauthorized: Can only view your own orders");
         };
@@ -494,7 +606,6 @@ actor {
       Runtime.trap("Unauthorized: Can only view your own order history");
     };
 
-    // Get order ids for user
     let historyList = List.empty<Order>();
     switch (users.get(user)) {
       case (null) { return [] };
@@ -512,7 +623,6 @@ actor {
     historyList.toArray();
   };
 
-  // Payment Functions
   public query ({ caller }) func isStripeConfigured() : async Bool {
     if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
       Runtime.trap("Unauthorized: Only authenticated users can check Stripe configuration");
@@ -552,7 +662,6 @@ actor {
     await Stripe.createCheckoutSession(getStripeConfiguration(), caller, items, successUrl, cancelUrl, transform);
   };
 
-  // Notification Functions
   func compareNotificationsByTimestamp(a : Notification, b : Notification) : Order.Order {
     if (a.timestamp > b.timestamp) { return #greater };
     if (a.timestamp < b.timestamp) { return #less };
@@ -742,10 +851,8 @@ actor {
     switch (notifications.get(notificationId)) {
       case (null) { null };
       case (?notification) {
-        // Check authorization: user can only view their own notifications or broadcasts, admins can view all
         switch (notification.user) {
           case (null) {
-            // Broadcast notification - only authenticated users can view
             if (not AccessControl.hasPermission(accessControlState, caller, #user)) {
               Runtime.trap("Unauthorized: Only authenticated users can view broadcast notifications");
             };
@@ -790,4 +897,5 @@ actor {
     };
     googleMapsUrl := newUrl;
   };
+
 };

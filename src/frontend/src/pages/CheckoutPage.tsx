@@ -45,7 +45,7 @@ export default function CheckoutPage() {
       // Convert cart items to Stripe shopping items
       const shoppingItems: ShoppingItem[] = items.map((item) => ({
         productName: item.name,
-        productDescription: item.description,
+        productDescription: item.description || '',
         priceInCents: BigInt(Math.round(item.price * 100)),
         quantity: BigInt(item.quantity),
         currency: 'inr',
@@ -69,7 +69,15 @@ export default function CheckoutPage() {
         currency: 'inr',
       });
 
-      const session = await createCheckoutSession.mutateAsync(shoppingItems);
+      const baseUrl = `${window.location.protocol}//${window.location.host}`;
+      const successUrl = `${baseUrl}/payment-success`;
+      const cancelUrl = `${baseUrl}/payment-failure`;
+
+      const session = await createCheckoutSession.mutateAsync({
+        items: shoppingItems,
+        successUrl,
+        cancelUrl,
+      });
       
       if (!session?.url) {
         throw new Error('Stripe session missing url');
@@ -103,11 +111,11 @@ export default function CheckoutPage() {
 
   if (stripeConfigLoading) {
     return (
-      <div className="container py-12 max-w-4xl">
-        <Card className="text-center">
-          <CardContent className="py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
-            <p className="text-muted-foreground mt-4">Loading...</p>
+      <div className="container py-16 max-w-4xl">
+        <Card className="text-center border-2">
+          <CardContent className="py-16">
+            <Loader2 className="h-10 w-10 animate-spin mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground mt-4 text-lg">Loading...</p>
           </CardContent>
         </Card>
       </div>
@@ -119,130 +127,136 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container py-8 md:py-12">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold mb-8">Shopping Cart</h1>
-
-        {items.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h2 className="text-2xl font-semibold mb-2">Your cart is empty</h2>
-              <p className="text-muted-foreground mb-6">Add some delicious items from our menu!</p>
-              <Button onClick={() => navigate({ to: '/menu' })}>Browse Menu</Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
-              {items.map((item) => (
-                <Card key={item.id}>
-                  <CardContent className="p-4">
-                    <div className="flex gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{item.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                        <p className="text-lg font-semibold text-primary">₹{item.price.toFixed(2)}</p>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeItem(item.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="w-12 text-center font-medium">{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <Card className="sticky top-20">
-                <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
-                  <CardDescription>Review your order details</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">₹{total.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Delivery Fee</span>
-                    <span className="font-medium">₹{deliveryFee.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax (8%)</span>
-                    <span className="font-medium">₹{tax.toFixed(2)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span className="text-primary">₹{grandTotal.toFixed(2)}</span>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-col gap-3">
-                  <Button
-                    className="w-full gap-2"
-                    size="lg"
-                    onClick={handleCheckout}
-                    disabled={!identity || createCheckoutSession.isPending}
-                  >
-                    {createCheckoutSession.isPending ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="h-5 w-5" />
-                        Proceed to Payment
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full gap-2"
-                    size="lg"
-                    onClick={handleWhatsAppOrder}
-                  >
-                    <SiWhatsapp className="h-5 w-5" />
-                    Order via WhatsApp
-                  </Button>
-                  {!identity && (
-                    <p className="text-sm text-muted-foreground text-center">
-                      Please log in to complete your order
-                    </p>
-                  )}
-                </CardFooter>
-              </Card>
-            </div>
-          </div>
-        )}
+    <div className="container py-10 md:py-16 max-w-5xl">
+      <div className="mb-10">
+        <h1 className="font-display text-5xl font-bold mb-3">Checkout</h1>
+        <p className="text-lg text-muted-foreground">Review your order and proceed to payment</p>
       </div>
+
+      {items.length === 0 ? (
+        <Card className="border-2">
+          <CardContent className="py-20 text-center">
+            <ShoppingCart className="h-20 w-20 mx-auto text-muted-foreground mb-6" />
+            <h2 className="font-display text-3xl font-semibold mb-3">Your cart is empty</h2>
+            <p className="text-lg text-muted-foreground mb-8">Add some delicious items from our menu!</p>
+            <Button onClick={() => navigate({ to: '/menu' })} size="lg" className="shadow-sm font-semibold">Browse Menu</Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="text-2xl font-display">Order Items</CardTitle>
+                <CardDescription className="text-base">Review and modify your order</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                {items.map((item) => (
+                  <div key={item.id} className="flex items-center gap-4 pb-5 border-b last:border-0 last:pb-0">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{item.name}</h3>
+                      <p className="text-sm text-muted-foreground mt-0.5">₹{item.price.toFixed(2)} each</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        className="h-9 w-9"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-10 text-center font-semibold text-lg">{item.quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="h-9 w-9"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeItem(item.id)}
+                        className="text-destructive hover:bg-destructive/10 h-9 w-9"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <div className="text-right font-bold text-lg min-w-[90px]">
+                      ₹{(item.price * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Card className="border-2 shadow-soft">
+              <CardHeader>
+                <CardTitle className="text-2xl font-display">Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="space-y-3">
+                  <div className="flex justify-between text-base">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-semibold">₹{total.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-base">
+                    <span className="text-muted-foreground">Delivery Fee</span>
+                    <span className="font-semibold">₹{deliveryFee.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-base">
+                    <span className="text-muted-foreground">Tax (8%)</span>
+                    <span className="font-semibold">₹{tax.toFixed(2)}</span>
+                  </div>
+                  <Separator className="my-3" />
+                  <div className="flex justify-between text-xl font-bold">
+                    <span className="font-display">Total</span>
+                    <span className="text-primary font-display">₹{grandTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="flex flex-col gap-3">
+                <Button
+                  className="w-full shadow-sm font-semibold"
+                  size="lg"
+                  onClick={handleCheckout}
+                  disabled={createCheckoutSession.isPending || !identity}
+                >
+                  {createCheckoutSession.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="mr-2 h-5 w-5" />
+                      Pay with Stripe
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full border-2 font-semibold"
+                  size="lg"
+                  onClick={handleWhatsAppOrder}
+                >
+                  <SiWhatsapp className="mr-2 h-5 w-5" />
+                  Order via WhatsApp
+                </Button>
+                {!identity && (
+                  <p className="text-xs text-center text-muted-foreground mt-1">
+                    Please log in to place an order
+                  </p>
+                )}
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,9 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Plus, Lock, Loader2, Package, Send, MapPin, Upload, Trash2 } from 'lucide-react';
+import { Plus, Lock, Loader2, Package, Send, MapPin, Trash2, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGetCallerUserRole, useGetAllOrders, useUpdateOrderStatus, useIsStripeConfigured, useAddBroadcastNotification, useGetRestaurantLocation, useSetRestaurantLocation, useGetRestaurantMapsUrl, useSetRestaurantMapsUrl, useAddMenuItem, useReplaceCategoryMenuItems } from '../hooks/useQueries';
+import { useGetCallerUserRole, useGetAllOrders, useUpdateOrderStatus, useIsStripeConfigured, useAddBroadcastNotification, useGetRestaurantLocation, useSetRestaurantLocation, useGetRestaurantMapsUrl, useSetRestaurantMapsUrl, useAddMenuItem, useReplaceCategoryMenuItems, useAddStarters } from '../hooks/useQueries';
 import { OrderStatus, MenuItem } from '../backend';
 import StripeSetup from '../components/StripeSetup';
 import { ADMIN_MENU_CATEGORIES } from '../constants/menuCategories';
@@ -52,11 +52,12 @@ export default function AdminPage() {
   const setMapsUrl = useSetRestaurantMapsUrl();
   const addMenuItem = useAddMenuItem();
   const replaceCategoryMenuItems = useReplaceCategoryMenuItems();
+  const addStarters = useAddStarters();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [locationInput, setLocationInput] = useState('');
   const [mapsUrlInput, setMapsUrlInput] = useState('');
-  const [bulkReplaceCategory, setBulkReplaceCategory] = useState('Curry');
+  const [bulkReplaceCategory, setBulkReplaceCategory] = useState('Biryani');
   const [bulkReplaceInput, setBulkReplaceInput] = useState('');
   const [parsedItems, setParsedItems] = useState<ParsedMenuItem[]>([]);
 
@@ -64,7 +65,7 @@ export default function AdminPage() {
     name: '',
     description: '',
     price: '',
-    category: 'Starters',
+    category: 'Biryani',
   });
 
   // Initialize location input when data loads
@@ -107,12 +108,22 @@ export default function AdminPage() {
         image: null,
       });
       toast.success('Menu item added successfully!');
-      setMenuItemForm({ name: '', description: '', price: '', category: 'Starters' });
+      setMenuItemForm({ name: '', description: '', price: '', category: 'Biryani' });
     } catch (error: any) {
       console.error('Failed to add menu item:', error);
       toast.error(error.message || 'Failed to add menu item');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateStarters = async () => {
+    try {
+      await addStarters.mutateAsync();
+      toast.success('Starters category updated successfully with 11 items!');
+    } catch (error: any) {
+      console.error('Failed to update starters:', error);
+      toast.error(error.message || 'Failed to update starters category');
     }
   };
 
@@ -388,6 +399,37 @@ export default function AdminPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
+                <RefreshCw className="h-5 w-5" />
+                Update Starters Category
+              </CardTitle>
+              <CardDescription>
+                Replace all items in the Starters category with the predefined list of 11 items
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={handleUpdateStarters} 
+                disabled={addStarters.isPending}
+                variant="default"
+              >
+                {addStarters.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Updating Starters...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Update Starters
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <Plus className="h-5 w-5" />
                 Add Menu Item
               </CardTitle>
@@ -402,7 +444,7 @@ export default function AdminPage() {
                       id="name"
                       value={menuItemForm.name}
                       onChange={(e) => setMenuItemForm({ ...menuItemForm, name: e.target.value })}
-                      placeholder="e.g., Paneer Butter Masala"
+                      placeholder="e.g., Chicken Biryani"
                       required
                     />
                   </div>
@@ -413,7 +455,7 @@ export default function AdminPage() {
                       type="number"
                       value={menuItemForm.price}
                       onChange={(e) => setMenuItemForm({ ...menuItemForm, price: e.target.value })}
-                      placeholder="e.g., 129"
+                      placeholder="e.g., 250"
                       required
                     />
                   </div>
@@ -442,20 +484,20 @@ export default function AdminPage() {
                     id="description"
                     value={menuItemForm.description}
                     onChange={(e) => setMenuItemForm({ ...menuItemForm, description: e.target.value })}
-                    placeholder="Optional description"
+                    placeholder="Brief description of the item"
                     rows={3}
                   />
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full">
+                <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Adding...
                     </>
                   ) : (
                     <>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Menu Item
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Item
                     </>
                   )}
                 </Button>
@@ -465,12 +507,9 @@ export default function AdminPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Upload className="h-5 w-5" />
-                Bulk Replace Category Items
-              </CardTitle>
+              <CardTitle>Bulk Replace Category Items</CardTitle>
               <CardDescription>
-                Replace all items in a category with new items from a list
+                Replace all items in a category with a new list. Paste items in format: "Item Name, Price/-"
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -489,75 +528,32 @@ export default function AdminPage() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="bulkInput">Items (one per line: "Name, Price/-")</Label>
+                <Label htmlFor="bulkInput">Items (one per line)</Label>
                 <Textarea
                   id="bulkInput"
                   value={bulkReplaceInput}
                   onChange={(e) => setBulkReplaceInput(e.target.value)}
-                  placeholder="Dal Fry, 80/-&#10;Dal Tadqa, 90/-&#10;Mixed Veg, 99/-"
+                  placeholder="Chicken Biryani, 250/-&#10;Mutton Biryani, 300/-&#10;Veg Biryani, 200/-"
                   rows={8}
-                  className="font-mono text-sm"
                 />
               </div>
-
-              <Button onClick={handleParseBulkItems} variant="outline" className="w-full">
-                Parse Items
-              </Button>
-
-              {parsedItems.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label>Preview ({parsedItems.length} items)</Label>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setParsedItems([])}
-                    >
-                      Clear All
-                    </Button>
-                  </div>
-                  <div className="border rounded-lg max-h-64 overflow-y-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Price</TableHead>
-                          <TableHead className="w-[50px]"></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {parsedItems.map((item, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>₹{item.priceInINR}</TableCell>
-                            <TableCell>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleRemoveParsedItem(index)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-
+              <div className="flex gap-2">
+                <Button onClick={handleParseBulkItems} variant="outline">
+                  Parse Items
+                </Button>
+                {parsedItems.length > 0 && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button className="w-full" variant="destructive">
-                        Replace {bulkReplaceCategory} Category
+                      <Button variant="destructive">
+                        Replace {parsedItems.length} Items
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Confirm Bulk Replace</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will remove all existing items in the "{bulkReplaceCategory}" category and replace them with {parsedItems.length} new items. This action cannot be undone.
+                          This will delete all existing items in the "{bulkReplaceCategory}" category and replace them with {parsedItems.length} new items. This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -568,6 +564,25 @@ export default function AdminPage() {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+                )}
+              </div>
+              {parsedItems.length > 0 && (
+                <div className="border rounded-lg p-4 space-y-2">
+                  <h4 className="font-semibold text-sm">Parsed Items ({parsedItems.length}):</h4>
+                  <div className="space-y-1 max-h-64 overflow-y-auto">
+                    {parsedItems.map((item, index) => (
+                      <div key={index} className="flex items-center justify-between text-sm py-1 px-2 bg-muted rounded">
+                        <span>{item.name} - ₹{item.priceInINR}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveParsedItem(index)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -595,15 +610,15 @@ export default function AdminPage() {
                     rows={4}
                   />
                 </div>
-                <Button type="submit" disabled={addBroadcast.isPending} className="w-full">
+                <Button type="submit" disabled={addBroadcast.isPending}>
                   {addBroadcast.isPending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
-                      <Send className="mr-2 h-4 w-4" />
+                      <Send className="h-4 w-4 mr-2" />
                       Send Broadcast
                     </>
                   )}
@@ -618,14 +633,14 @@ export default function AdminPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
-                Restaurant Information
+                Restaurant Location
               </CardTitle>
-              <CardDescription>Update restaurant location and map details</CardDescription>
+              <CardDescription>Update the restaurant address</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent>
               <form onSubmit={handleSaveLocation} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="location">Restaurant Location</Label>
+                  <Label htmlFor="location">Address</Label>
                   <Textarea
                     id="location"
                     value={locationInput}
@@ -637,7 +652,7 @@ export default function AdminPage() {
                 <Button type="submit" disabled={setLocation.isPending}>
                   {setLocation.isPending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Saving...
                     </>
                   ) : (
@@ -645,25 +660,30 @@ export default function AdminPage() {
                   )}
                 </Button>
               </form>
+            </CardContent>
+          </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>Google Maps Embed URL</CardTitle>
+              <CardDescription>Update the Google Maps iframe embed URL</CardDescription>
+            </CardHeader>
+            <CardContent>
               <form onSubmit={handleSaveMapsUrl} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="mapsUrl">Google Maps Embed URL</Label>
+                  <Label htmlFor="mapsUrl">Embed URL</Label>
                   <Textarea
                     id="mapsUrl"
                     value={mapsUrlInput}
                     onChange={(e) => setMapsUrlInput(e.target.value)}
-                    placeholder="Enter Google Maps embed URL..."
+                    placeholder="https://www.google.com/maps/embed?pb=..."
                     rows={3}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Get the embed URL from Google Maps → Share → Embed a map
-                  </p>
                 </div>
                 <Button type="submit" disabled={setMapsUrl.isPending}>
                   {setMapsUrl.isPending ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Saving...
                     </>
                   ) : (

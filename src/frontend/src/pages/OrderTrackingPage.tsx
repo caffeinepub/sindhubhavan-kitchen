@@ -47,11 +47,11 @@ export default function OrderTrackingPage() {
 
   if (!identity) {
     return (
-      <div className="container py-12 max-w-2xl">
-        <Card className="text-center">
+      <div className="container py-16 max-w-2xl">
+        <Card className="text-center border-2">
           <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>Please log in to track your order.</CardDescription>
+            <CardTitle className="text-2xl font-display">Login Required</CardTitle>
+            <CardDescription className="text-base">Please log in to track your order.</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -60,11 +60,11 @@ export default function OrderTrackingPage() {
 
   if (isLoading) {
     return (
-      <div className="container py-12 max-w-2xl">
-        <Card className="text-center">
-          <CardContent className="py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
-            <p className="text-muted-foreground mt-4">Loading order details...</p>
+      <div className="container py-16 max-w-2xl">
+        <Card className="text-center border-2">
+          <CardContent className="py-16">
+            <Loader2 className="h-10 w-10 animate-spin mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground mt-4 text-lg">Loading order details...</p>
           </CardContent>
         </Card>
       </div>
@@ -73,16 +73,16 @@ export default function OrderTrackingPage() {
 
   if (error || !order) {
     return (
-      <div className="container py-12 max-w-2xl">
-        <Card className="text-center">
+      <div className="container py-16 max-w-2xl">
+        <Card className="text-center border-2">
           <CardHeader>
-            <CardTitle>Order Not Found</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-display">Order Not Found</CardTitle>
+            <CardDescription className="text-base">
               The order you're looking for doesn't exist or you don't have permission to view it.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => navigate({ to: '/orders' })}>
+            <Button onClick={() => navigate({ to: '/orders' })} size="lg" className="shadow-sm font-semibold">
               View Order History
             </Button>
           </CardContent>
@@ -98,38 +98,38 @@ export default function OrderTrackingPage() {
   const totalAmount = Number(order.totalAmountInINR) / 100;
 
   return (
-    <div className="container py-8 md:py-12 max-w-3xl">
+    <div className="container py-10 md:py-16 max-w-3xl">
       <Button
         variant="ghost"
-        className="mb-6 gap-2"
+        className="mb-8 gap-2 hover:bg-primary/10 hover:text-primary font-semibold"
         onClick={() => navigate({ to: '/orders' })}
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Orders
       </Button>
 
-      <Card>
+      <Card className="border-2 shadow-soft">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div>
-              <CardTitle className="text-2xl">Order #{order.id.toString()}</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-3xl font-display">Order #{order.id.toString()}</CardTitle>
+              <CardDescription className="text-base mt-2">
                 Placed on {orderDate.toLocaleDateString()} at {orderDate.toLocaleTimeString()}
               </CardDescription>
             </div>
-            <Badge variant={status.variant} className="text-sm">
+            <Badge variant={status.variant} className="text-sm font-semibold px-3 py-1">
               {status.label}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-8">
           {/* Status Timeline */}
-          <div className={`${status.bgColor} rounded-lg p-6 text-center`}>
-            <StatusIcon className={`h-12 w-12 mx-auto mb-3 ${status.color}`} />
-            <h3 className={`text-lg font-semibold mb-1 ${status.color}`}>
+          <div className={`${status.bgColor} rounded-xl p-8 text-center`}>
+            <StatusIcon className={`h-16 w-16 mx-auto mb-4 ${status.color}`} />
+            <h3 className={`text-xl font-bold mb-2 ${status.color} font-display`}>
               {status.label}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {order.status === 'pending' && 'Your order has been received and is being processed.'}
               {order.status === 'preparing' && 'Our chefs are preparing your delicious meal.'}
               {order.status === 'outForDelivery' && 'Your order is on its way to you!'}
@@ -148,20 +148,20 @@ export default function OrderTrackingPage() {
               return (
                 <div key={step} className="flex flex-col items-center flex-1">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all ${
                       isActive || isPast
                         ? stepConfig.bgColor
                         : 'bg-muted'
                     }`}
                   >
                     <StepIcon
-                      className={`h-5 w-5 ${
+                      className={`h-6 w-6 ${
                         isActive || isPast ? stepConfig.color : 'text-muted-foreground'
                       }`}
                     />
                   </div>
-                  <span className={`text-xs text-center ${
-                    isActive || isPast ? 'font-medium' : 'text-muted-foreground'
+                  <span className={`text-xs text-center font-medium ${
+                    isActive || isPast ? '' : 'text-muted-foreground'
                   }`}>
                     {stepConfig.label}
                   </span>
@@ -174,16 +174,14 @@ export default function OrderTrackingPage() {
 
           {/* Order Items */}
           <div>
-            <h3 className="font-semibold mb-3">Order Items</h3>
-            <div className="space-y-2">
+            <h3 className="font-display font-bold text-xl mb-4">Order Items</h3>
+            <div className="space-y-3">
               {order.items.map((item, index) => (
-                <div key={index} className="flex justify-between text-sm">
+                <div key={index} className="flex justify-between text-base py-2 border-b last:border-0">
                   <span className="text-muted-foreground">
                     Item #{item.menuItemId.toString()} × {item.quantity.toString()}
                   </span>
-                  <span className="font-medium">
-                    ₹{(Number(item.priceInINR) / 100).toFixed(2)}
-                  </span>
+                  <span className="font-semibold">₹{Number(item.priceInINR)}</span>
                 </div>
               ))}
             </div>
@@ -191,18 +189,18 @@ export default function OrderTrackingPage() {
 
           <Separator />
 
-          {/* Order Total */}
-          <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold">Total Amount</span>
-            <span className="text-2xl font-bold text-primary">
-              ₹{totalAmount.toFixed(2)}
-            </span>
+          {/* Total */}
+          <div className="flex justify-between items-center text-xl">
+            <span className="font-display font-bold">Total Amount</span>
+            <span className="font-display font-bold text-primary text-2xl">₹{Number(order.totalAmountInINR)}</span>
           </div>
 
           {order.paymentId && (
-            <p className="text-xs text-muted-foreground text-center">
-              Payment ID: {order.paymentId}
-            </p>
+            <div className="bg-muted/30 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-semibold">Payment ID:</span> {order.paymentId}
+              </p>
+            </div>
           )}
         </CardContent>
       </Card>

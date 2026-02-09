@@ -1,11 +1,12 @@
+import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Package, Loader2, ShoppingBag } from 'lucide-react';
-import { useGetUserOrderHistory } from '../hooks/useQueries';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Package, Loader2, Eye } from 'lucide-react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
+import { useGetUserOrders } from '../hooks/useQueries';
 import { OrderStatus } from '../backend';
 
 const statusVariants: Record<OrderStatus, 'default' | 'secondary' | 'outline'> = {
@@ -25,15 +26,29 @@ const statusLabels: Record<OrderStatus, string> = {
 export default function OrderHistoryPage() {
   const navigate = useNavigate();
   const { identity } = useInternetIdentity();
-  const { data: orders, isLoading } = useGetUserOrderHistory(identity?.getPrincipal() || null);
+  const { data: orders, isLoading } = useGetUserOrders();
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  const formatDate = (timestamp: bigint) => {
+    const date = new Date(Number(timestamp) / 1000000);
+    return date.toLocaleString();
+  };
+
+  const sortedOrders = [...(orders || [])].sort((a, b) => {
+    const comparison = Number(b.created - a.created);
+    return sortOrder === 'desc' ? comparison : -comparison;
+  });
 
   if (!identity) {
     return (
-      <div className="container py-12 max-w-2xl">
-        <Card className="text-center">
+      <div className="container py-16 max-w-2xl">
+        <Card className="text-center border-2">
           <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>Please log in to view your order history.</CardDescription>
+            <Package className="h-14 w-14 mx-auto text-muted-foreground mb-4" />
+            <CardTitle className="text-2xl font-display">Authentication Required</CardTitle>
+            <CardDescription className="text-base">
+              Please log in to view your order history.
+            </CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -42,108 +57,91 @@ export default function OrderHistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="container py-12 max-w-2xl">
-        <Card className="text-center">
-          <CardContent className="py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
-            <p className="text-muted-foreground mt-4">Loading your orders...</p>
+      <div className="container py-16 max-w-6xl">
+        <Card className="text-center border-2">
+          <CardContent className="py-16">
+            <Loader2 className="h-10 w-10 animate-spin mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground mt-4 text-lg">Loading orders...</p>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  const sortedOrders = [...(orders || [])].sort((a, b) => Number(b.created - a.created));
-
   return (
-    <div className="container py-8 md:py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">Order History</h1>
-        <p className="text-muted-foreground">View all your past and current orders</p>
+    <div className="container py-10 md:py-16 max-w-6xl">
+      <div className="mb-10">
+        <h1 className="font-display text-5xl font-bold mb-3">Order History</h1>
+        <p className="text-lg text-muted-foreground">View all your past and current orders</p>
       </div>
 
       {sortedOrders.length === 0 ? (
-        <Card className="text-center">
-          <CardHeader>
-            <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <CardTitle>No Orders Yet</CardTitle>
-            <CardDescription>
-              You haven't placed any orders yet. Start by browsing our menu!
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => navigate({ to: '/menu' })}>
-              Browse Menu
-            </Button>
+        <Card className="border-2">
+          <CardContent className="py-16 text-center">
+            <Package className="h-14 w-14 mx-auto text-muted-foreground mb-4" />
+            <h2 className="font-display text-2xl font-semibold mb-3">No orders yet</h2>
+            <p className="text-lg text-muted-foreground mb-8">Start ordering from our delicious menu!</p>
+            <Button onClick={() => navigate({ to: '/menu' })} size="lg" className="shadow-sm font-semibold">Browse Menu</Button>
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className="border-2 shadow-soft">
           <CardHeader>
-            <CardTitle>Your Orders</CardTitle>
-            <CardDescription>
-              {sortedOrders.length} {sortedOrders.length === 1 ? 'order' : 'orders'} found
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-2xl font-display">Your Orders</CardTitle>
+                <CardDescription className="text-base">{sortedOrders.length} total orders</CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+                className="border-2 font-semibold"
+              >
+                Sort: {sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Order ID</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Items</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="font-semibold">Order ID</TableHead>
+                    <TableHead className="font-semibold">Date</TableHead>
+                    <TableHead className="font-semibold">Items</TableHead>
+                    <TableHead className="font-semibold">Total</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedOrders.map((order) => {
-                    const orderDate = new Date(Number(order.created) / 1000000);
-                    const totalAmount = Number(order.totalAmountInINR) / 100;
-                    const itemCount = order.items.reduce(
-                      (sum, item) => sum + Number(item.quantity),
-                      0
-                    );
-
-                    return (
-                      <TableRow key={order.id.toString()}>
-                        <TableCell className="font-medium">
-                          #{order.id.toString()}
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {orderDate.toLocaleDateString()}
-                          <br />
-                          <span className="text-xs">
-                            {orderDate.toLocaleTimeString()}
-                          </span>
-                        </TableCell>
-                        <TableCell>{itemCount}</TableCell>
-                        <TableCell className="font-semibold">
-                          ₹{totalAmount.toFixed(2)}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={statusVariants[order.status]}>
-                            {statusLabels[order.status]}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() =>
-                              navigate({ to: `/orders/${order.id.toString()}` })
-                            }
-                          >
-                            <Package className="h-4 w-4" />
-                            Track
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  {sortedOrders.map((order) => (
+                    <TableRow key={order.id.toString()} className="hover:bg-muted/30">
+                      <TableCell className="font-medium">#{order.id.toString()}</TableCell>
+                      <TableCell className="text-sm">{formatDate(order.created)}</TableCell>
+                      <TableCell>{order.items.length} items</TableCell>
+                      <TableCell className="font-bold text-primary">₹{Number(order.totalAmountInINR)}</TableCell>
+                      <TableCell>
+                        <Badge variant={statusVariants[order.status]} className="font-semibold">
+                          {statusLabels[order.status]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            navigate({ to: '/orders/$orderId', params: { orderId: order.id.toString() } })
+                          }
+                          className="gap-1.5 font-semibold hover:bg-primary/10 hover:text-primary"
+                        >
+                          <Eye className="h-4 w-4" />
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </div>

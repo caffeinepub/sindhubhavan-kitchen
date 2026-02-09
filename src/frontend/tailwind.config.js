@@ -9,12 +9,22 @@ export default {
     theme: {
         container: {
             center: true,
-            padding: '2rem',
+            padding: {
+                DEFAULT: '1rem',
+                sm: '2rem',
+                lg: '4rem',
+                xl: '5rem',
+                '2xl': '6rem',
+            },
             screens: {
                 '2xl': '1400px'
             }
         },
         extend: {
+            fontFamily: {
+                sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                display: ['Playfair Display', 'Georgia', 'serif'],
+            },
             colors: {
                 border: 'oklch(var(--border))',
                 input: 'oklch(var(--input))',
@@ -73,7 +83,9 @@ export default {
                 sm: 'calc(var(--radius) - 4px)'
             },
             boxShadow: {
-                xs: '0 1px 2px 0 rgba(0,0,0,0.05)'
+                'xs': '0 1px 2px 0 rgba(0,0,0,0.05)',
+                'soft': '0 2px 8px -2px rgba(0,0,0,0.1), 0 4px 12px -4px rgba(0,0,0,0.08)',
+                'warm': '0 4px 16px -4px rgba(217, 119, 6, 0.15), 0 8px 24px -8px rgba(217, 119, 6, 0.1)',
             },
             keyframes: {
                 'accordion-down': {

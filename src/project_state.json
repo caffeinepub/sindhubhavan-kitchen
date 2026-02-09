@@ -1,30 +1,55 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "Project restored to draft/version 27 after deployment/draft-state issues; next focus is improving the website UI/visual design (colors, typography, sizing, overall look).",
   "architectural_notes": [],
   "known_issues": [
-    "Contact page map is showing an incorrect restaurant location (needs update to correct coordinates)."
+    "Deployment/build encountered issue where the draft section showed a message like \"you don't have a draft yet\""
   ],
   "isFixRequest": true,
-  "existing_features": [],
-  "new_feature_requests": [
+  "existing_features": [
     {
-      "id": "AR-1",
-      "summary": "Update Contact page map to pinpoint restaurant location at coordinates (17.689073236620935, 83.23327778764002)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Update the app’s configured Google Maps embed URL so the Contact page map pins the restaurant at coordinates (17.689073236620935, 83.23327778764002), without changing the existing map iframe styling or layout.",
+      "id": "feature-define-and-apply-a-cohesive-modern-warm-culinary-visual-theme-across-the-site-color-palette-typography-sizing-spacing-and-component-styling-to-make-the-website-look-more-polished-and-eye-pleasing-without-changing-app-functionality",
+      "title": "Define and apply a cohesive, modern “warm culinary” visual theme across the site (color palette, typography, sizing, spacing, and component styling) to make the website look more polished and eye-pleasing, without changing app functionality.",
       "reqIds": [
         "REQ-1"
       ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-global-theme-tokens-and-base-styles-used-by-tailwind-shadcn-light-dark-mode-so-colors-contrast-borders-and-backgrounds-look-premium-and-consistent-across-the-app",
+      "title": "Update the global theme tokens and base styles used by Tailwind/Shadcn (light + dark mode) so colors, contrast, borders, and backgrounds look premium and consistent across the app.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-typography-across-the-site-font-choices-scale-line-height-and-tracking-and-ensure-consistent-heading-body-sizing-on-key-pages-home-menu-checkout-contact-orders-notifications",
+      "title": "Improve typography across the site (font choices, scale, line-height, and tracking) and ensure consistent heading/body sizing on key pages (Home, Menu, Checkout, Contact, Orders/Notifications).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-layout-and-visual-polish-of-the-main-shared-ui-areas-header-footer-layout-container-spacing-and-key-page-sections-home-hero-feature-cards-cta-menu-item-cards-and-category-tabs-checkout-summary-and-cart-list-contact-cards-to-look-more-modern-and-designed",
+      "title": "Refine layout and visual polish of the main shared UI areas (Header, Footer, Layout container spacing) and key page sections (Home hero/feature cards/CTA, Menu item cards and category tabs, Checkout summary and cart list, Contact cards) to look more modern and “designed”.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Revamp website UI to be more visually appealing (eye-pleasing colors, fonts, sizing, overall styling)",
+      "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Update Contact page map to restaurant coordinates",
+  "projectName": "Revamp Zaika Kitchen UI with an eye-pleasing visual design (colors, typography, spacing)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

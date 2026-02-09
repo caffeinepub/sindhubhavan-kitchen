@@ -1,6 +1,202 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update Contact page map to restaurant coordinates (frontend-only)",
-  "requirements": []
+  "title": "Zaika Kitchen warm culinary UI theme + typography + layout polish (visual-only)",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Establish a cohesive warm, modern culinary visual theme across the app (palette, typography hierarchy, spacing, elevation) without changing functionality.",
+      "acceptanceCriteria": [
+        "A single coherent visual style is apparent across all pages (Header/Footer + main pages) with consistent color usage, typography, spacing, and radius/shadow treatment.",
+        "Theme avoids a generic default look by using a distinct warm, food-inspired palette (not blue/purple-dominant unless already present) and consistent typographic hierarchy (H1/H2/body/captions).",
+        "No user-facing text is changed away from English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Refine global base styling for a warm culinary look (e.g., background treatment, default text rendering, consistent spacing rhythm helpers via utility classes in @layer base/components). Keep all changes token-driven via CSS variables and Tailwind utilities (no page-specific hardcoding-only)."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Extend Tailwind theme to support the new warm culinary design language: update container defaults if needed, add font families, and add any small reusable shadow/radius/elevation presets to standardize the look across pages."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Polish global layout composition (main area padding, consistent vertical spacing between header/page/footer) while preserving existing routing and Outlet behavior."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Apply the cohesive theme to the Home hero/feature/CTA sections using consistent spacing, gradients, and card/button styling, while keeping the existing content and actions intact."
+        },
+        {
+          "path": "frontend/src/pages/MenuPage.tsx",
+          "operation": "modify",
+          "description": "Apply the cohesive theme to Menu tabs and item cards (elevation, borders, image treatment, price emphasis) without changing filtering/sorting/add-to-cart behavior."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "operation": "modify",
+          "description": "Apply the cohesive theme to Checkout grouping and emphasis (cart list rows, summary card, totals hierarchy) without altering Stripe/WhatsApp logic."
+        },
+        {
+          "path": "frontend/src/pages/ContactPage.tsx",
+          "operation": "modify",
+          "description": "Apply the cohesive theme to Contact cards and map container styling (consistent card padding, icon styling, subtle elevation) without changing data fetching or links."
+        },
+        {
+          "path": "frontend/src/pages/NotificationsPage.tsx",
+          "operation": "modify",
+          "description": "Align Notifications page styling to the cohesive theme (list row spacing, hover states, badges) without changing read/unread or navigation behavior."
+        },
+        {
+          "path": "frontend/src/pages/OrderHistoryPage.tsx",
+          "operation": "modify",
+          "description": "Align Orders table/card styling to the cohesive theme (header hierarchy, table density, badges/buttons) without changing sorting or navigation behavior."
+        },
+        {
+          "path": "frontend/src/pages/OrderTrackingPage.tsx",
+          "operation": "modify",
+          "description": "Align Order tracking status timeline and totals section to the cohesive theme (consistent colors, spacing, and emphasis) without changing status logic."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Update Tailwind/Shadcn global theme tokens and base styles for premium, consistent light + dark mode contrast using the existing CSS-variable approach.",
+      "acceptanceCriteria": [
+        "Light mode and dark mode both have readable contrast for background/foreground, muted text, borders, and primary/accent colors (no washed-out text on cards or gradients).",
+        "Global background, card, and border styling feels consistent across pages (e.g., subtle elevation/shadows and balanced border opacity).",
+        "Changes are implemented via the existing CSS variable theme approach (e.g., the variables in frontend/src/index.css) rather than page-by-page hardcoding only."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Rework the existing light/dark CSS variable tokens (background/foreground/card/popover/muted/border/input/ring/primary/secondary/accent/destructive) to a warm food-inspired palette with strong contrast. Ensure border opacity and surfaces look premium and consistent across the app."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Ensure Tailwind color mappings (oklch(var(--...))) correctly support the updated tokens (including ring alpha usage). Add/adjust shared shadow presets for consistent card elevation across light/dark mode."
+        },
+        {
+          "path": "frontend/public/manifest.json",
+          "operation": "modify",
+          "description": "Update PWA theme-related colors (e.g., theme_color/background_color if present) to match the updated warm palette for a consistent branded feel in the browser/app shell."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Improve site-wide typography (font choices, scale, line-height, tracking) and ensure consistent heading/body sizing across key pages.",
+      "acceptanceCriteria": [
+        "Headings and body text have a clear hierarchy: page titles are visually dominant, section headings are consistent, and muted/supporting text is legible.",
+        "Buttons, tabs, badges, and navigation text sizes feel balanced and consistent between mobile and desktop breakpoints.",
+        "No layout regressions: text does not overflow or truncate unexpectedly in header nav, cards, tabs, or checkout summary at common screen sizes."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Add/update the app font loading (e.g., a warm, modern pairing such as a refined sans for UI + optional display face for headings) using standard web font loading in the HTML head. Keep this change purely presentational."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Define Tailwind font families and (if needed) extend fontSize/lineHeight/letterSpacing defaults to establish a consistent typographic scale for headings, body, captions, and UI labels."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Set global typography defaults (font-smoothing, base line-height, consistent heading defaults using @layer base) so page titles/section titles/body text are consistent without per-page overrides."
+        },
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Adjust navigation typography and spacing (logo wordmark sizing, link sizing, active/hover clarity) to match the new typographic hierarchy without changing navigation behavior."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Align Home typography to the new scale (hero H1, section H2, supporting copy) ensuring responsive sizing and no overflow on common breakpoints."
+        },
+        {
+          "path": "frontend/src/pages/MenuPage.tsx",
+          "operation": "modify",
+          "description": "Align Menu page title, tab trigger sizing, card title/description, and price emphasis to the new typographic scale without impacting layout stability."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "operation": "modify",
+          "description": "Improve Checkout typographic hierarchy (Order Items vs Summary vs Total) and ensure buttons and helper text remain readable and consistent on mobile/desktop."
+        },
+        {
+          "path": "frontend/src/pages/ContactPage.tsx",
+          "operation": "modify",
+          "description": "Improve Contact page title/description and card headings/body text for consistent hierarchy and legibility."
+        },
+        {
+          "path": "frontend/src/pages/OrderHistoryPage.tsx",
+          "operation": "modify",
+          "description": "Improve Orders page header typography and table text density for readability without truncation or overflow."
+        },
+        {
+          "path": "frontend/src/pages/NotificationsPage.tsx",
+          "operation": "modify",
+          "description": "Improve Notifications page header typography and list-row text sizing/line-height for readability and consistent hierarchy."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Refine shared layout areas (Header/Footer/container spacing) and key page sections (Home, Menu, Checkout, Contact) for a more modern, designed feel while preserving behavior.",
+      "acceptanceCriteria": [
+        "Header looks intentionally designed (balanced spacing, improved hover/active states, better alignment of logo/nav/actions) while preserving existing behavior (cart, notifications, admin link, mobile sheet).",
+        "Home page hero/sections look more premium via improved spacing, gradient usage, card styling, and button variants, while keeping the existing content and actions intact.",
+        "Menu page cards and tabs feel consistent and visually refined (card elevation/borders, image treatment, price emphasis, button styling) without changing menu filtering/add-to-cart behavior.",
+        "Checkout page readability is improved (clear grouping, spacing, and emphasis for totals) without changing the Stripe/WhatsApp flows."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Polish header layout and interactions: container alignment, nav link hover/active styling, icon button states, and sticky/blur surface treatment while preserving all existing actions (cart, notifications, admin link, mobile sheet, logout)."
+        },
+        {
+          "path": "frontend/src/components/Footer.tsx",
+          "operation": "modify",
+          "description": "Refine footer spacing, section separation, and muted surface styling for a more premium, consistent look across light/dark mode without changing content or links."
+        },
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Add consistent page-level padding/vertical rhythm so each page feels designed and consistent, without changing route structure or behavior."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Refine Home hero (background gradient, spacing, CTA grouping) and feature cards (elevation, border, hover) to look more modern while keeping current components and actions."
+        },
+        {
+          "path": "frontend/src/pages/MenuPage.tsx",
+          "operation": "modify",
+          "description": "Refine TabsList layout (wrap/scroll behavior as needed for smaller screens), tab trigger styling, and menu item card composition (image container, card padding, CTA alignment) without changing logic."
+        },
+        {
+          "path": "frontend/src/pages/CheckoutPage.tsx",
+          "operation": "modify",
+          "description": "Improve checkout visual grouping: item row dividers, quantity controls spacing, summary emphasis (Total row), and button prominence while keeping all payment/WhatsApp flows unchanged."
+        },
+        {
+          "path": "frontend/src/pages/ContactPage.tsx",
+          "operation": "modify",
+          "description": "Refine Contact cards and map iframe container (radius, border, surface elevation) for a modern designed look without changing fetched data or behaviors."
+        }
+      ]
+    }
+  ]
 }

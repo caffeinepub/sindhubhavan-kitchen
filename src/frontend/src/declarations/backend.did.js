@@ -159,6 +159,7 @@ export const idlService = IDL.Service({
       [IDL.Nat],
       [],
     ),
+  'addStarters' : IDL.Func([], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'clearUserNotifications' : IDL.Func([IDL.Principal], [], []),
   'createCheckoutSession' : IDL.Func(
@@ -402,6 +403,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat],
         [],
       ),
+    'addStarters' : IDL.Func([], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'clearUserNotifications' : IDL.Func([IDL.Principal], [], []),
     'createCheckoutSession' : IDL.Func(

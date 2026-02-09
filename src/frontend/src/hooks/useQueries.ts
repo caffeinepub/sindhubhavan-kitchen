@@ -1,33 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { UserRole, MenuItem, Order, OrderStatus, ShoppingItem, StripeConfiguration, NewOrder, OrderItem, Notification, NotificationType } from '../backend';
-import { Principal } from '@icp-sdk/core/principal';
-
-export function useGetCallerUserRole() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<UserRole>({
-    queryKey: ['callerUserRole'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getCallerUserRole();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useIsCallerAdmin() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<boolean>({
-    queryKey: ['isCallerAdmin'],
-    queryFn: async () => {
-      if (!actor) return false;
-      return actor.isCallerAdmin();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
+import { useInternetIdentity } from './useInternetIdentity';
+import type { 
+  MenuItem, 
+  Order, 
+  OrderStatus, 
+  NewOrder, 
+  Notification, 
+  StripeConfiguration,
+  UserRole,
+} from '../backend';
 
 // Menu Items
 export function useGetMenuItems() {
@@ -38,19 +20,6 @@ export function useGetMenuItems() {
     queryFn: async () => {
       if (!actor) return [];
       return actor.getMenuItems();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useGetMenuItemsByCategory(category: string) {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<MenuItem[]>({
-    queryKey: ['menuItems', category],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.getMenuItemsByCategory(category);
     },
     enabled: !!actor && !isFetching,
   });
@@ -80,11 +49,34 @@ export function useAddMenuItem() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
     },
-    onError: (error: any) => {
-      if (error?.message?.includes('Unauthorized')) {
-        throw new Error('You do not have permission to add menu items');
-      }
-      throw error;
+  });
+}
+
+export function useUpdateMenuItem() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params: {
+      id: bigint;
+      name: string;
+      description: string;
+      priceInINR: bigint;
+      category: string;
+      image: any;
+    }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateMenuItem(
+        params.id,
+        params.name,
+        params.description,
+        params.priceInINR,
+        params.category,
+        params.image
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['menuItems'] });
     },
   });
 }
@@ -101,32 +93,49 @@ export function useReplaceCategoryMenuItems() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['menuItems'] });
     },
-    onError: (error: any) => {
-      if (error?.message?.includes('Unauthorized')) {
-        throw new Error('You do not have permission to replace menu items');
-      }
-      throw error;
+  });
+}
+
+export function useAddStarters() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.addStarters();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['menuItems'] });
     },
   });
 }
 
 // Orders
-export function useCreateOrder() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
+export function useGetAllOrders() {
+  const { actor, isFetching } = useActor();
 
-  return useMutation({
-    mutationFn: async (order: NewOrder): Promise<bigint> => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.createOrder(order);
+  return useQuery<Order[]>({
+    queryKey: ['orders'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllOrders();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['userActiveOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['userOrderHistory'] });
-      queryClient.invalidateQueries({ queryKey: ['userNotifications'] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetUserOrders() {
+  const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  return useQuery<Order[]>({
+    queryKey: ['userOrders', identity?.getPrincipal().toString()],
+    queryFn: async () => {
+      if (!actor || !identity) return [];
+      return actor.getUserOrders(identity.getPrincipal());
     },
+    enabled: !!actor && !!identity && !isFetching,
   });
 }
 
@@ -139,76 +148,24 @@ export function useGetOrder(orderId: bigint | null) {
       if (!actor || !orderId) return null;
       return actor.getOrder(orderId);
     },
-    enabled: !!actor && !isFetching && orderId !== null,
-    refetchInterval: 5000, // Poll every 5 seconds for status updates
+    enabled: !!actor && !!orderId && !isFetching,
+    refetchInterval: 5000,
   });
 }
 
-export function useGetOrderStatus(orderId: bigint | null) {
-  const { actor, isFetching } = useActor();
+export function useCreateOrder() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
 
-  return useQuery<OrderStatus | null>({
-    queryKey: ['orderStatus', orderId?.toString()],
-    queryFn: async () => {
-      if (!actor || !orderId) return null;
-      return actor.getOrderStatus(orderId);
+  return useMutation({
+    mutationFn: async (order: NewOrder) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.createOrder(order);
     },
-    enabled: !!actor && !isFetching && orderId !== null,
-    refetchInterval: 5000, // Poll every 5 seconds
-  });
-}
-
-export function useGetUserOrders(user: Principal | null) {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Order[]>({
-    queryKey: ['userOrders', user?.toString()],
-    queryFn: async () => {
-      if (!actor || !user) return [];
-      return actor.getUserOrders(user);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
-    enabled: !!actor && !isFetching && !!user,
-  });
-}
-
-export function useGetUserActiveOrders(user: Principal | null) {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Order[]>({
-    queryKey: ['userActiveOrders', user?.toString()],
-    queryFn: async () => {
-      if (!actor || !user) return [];
-      return actor.getUserActiveOrders(user);
-    },
-    enabled: !!actor && !isFetching && !!user,
-    refetchInterval: 10000, // Poll every 10 seconds
-  });
-}
-
-export function useGetUserOrderHistory(user: Principal | null) {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Order[]>({
-    queryKey: ['userOrderHistory', user?.toString()],
-    queryFn: async () => {
-      if (!actor || !user) return [];
-      return actor.getUserOrderHistory(user);
-    },
-    enabled: !!actor && !isFetching && !!user,
-  });
-}
-
-export function useGetAllOrders() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Order[]>({
-    queryKey: ['allOrders'],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.getAllOrders();
-    },
-    enabled: !!actor && !isFetching,
-    refetchInterval: 10000, // Poll every 10 seconds for admin
   });
 }
 
@@ -217,28 +174,24 @@ export function useUpdateOrderStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orderId, status }: { orderId: bigint; status: OrderStatus }) => {
+    mutationFn: async (params: { orderId: bigint; status: OrderStatus }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.updateOrderStatus(orderId, status);
+      return actor.updateOrderStatus(params.orderId, params.status);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['order'] });
-      queryClient.invalidateQueries({ queryKey: ['orderStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['userOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['userActiveOrders'] });
-      queryClient.invalidateQueries({ queryKey: ['userNotifications'] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+      queryClient.invalidateQueries({ queryKey: ['order'] });
     },
   });
 }
 
-// Stripe Payment
+// Stripe
 export function useIsStripeConfigured() {
   const { actor, isFetching } = useActor();
 
   return useQuery<boolean>({
-    queryKey: ['isStripeConfigured'],
+    queryKey: ['stripeConfigured'],
     queryFn: async () => {
       if (!actor) return false;
       return actor.isStripeConfigured();
@@ -257,27 +210,27 @@ export function useSetStripeConfiguration() {
       return actor.setStripeConfiguration(config);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['isStripeConfigured'] });
+      queryClient.invalidateQueries({ queryKey: ['stripeConfigured'] });
     },
   });
 }
-
-export type CheckoutSession = {
-  id: string;
-  url: string;
-};
 
 export function useCreateCheckoutSession() {
   const { actor } = useActor();
 
   return useMutation({
-    mutationFn: async (items: ShoppingItem[]): Promise<CheckoutSession> => {
+    mutationFn: async (params: {
+      items: any[];
+      successUrl: string;
+      cancelUrl: string;
+    }) => {
       if (!actor) throw new Error('Actor not available');
-      const baseUrl = `${window.location.protocol}//${window.location.host}`;
-      const successUrl = `${baseUrl}/payment-success`;
-      const cancelUrl = `${baseUrl}/payment-failure`;
-      const result = await actor.createCheckoutSession(items, successUrl, cancelUrl);
-      const session = JSON.parse(result) as CheckoutSession;
+      const result = await actor.createCheckoutSession(
+        params.items,
+        params.successUrl,
+        params.cancelUrl
+      );
+      const session = JSON.parse(result) as { id: string; url: string };
       if (!session?.url) {
         throw new Error('Stripe session missing url');
       }
@@ -298,36 +251,45 @@ export function useGetStripeSessionStatus() {
 }
 
 // Notifications
-export function useGetUserNotifications(user: Principal | null) {
+export function useGetUserNotifications() {
   const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
 
   return useQuery<Notification[]>({
-    queryKey: ['userNotifications', user?.toString()],
+    queryKey: ['userNotifications', identity?.getPrincipal().toString()],
     queryFn: async () => {
-      if (!actor || !user) return [];
-      const userNotifications = await actor.getUserNotifications(user);
-      const broadcastNotifications = await actor.getBroadcastNotifications();
-      return [...userNotifications, ...broadcastNotifications];
+      if (!actor || !identity) return [];
+      return actor.getUserNotifications(identity.getPrincipal());
     },
-    enabled: !!actor && !isFetching && !!user,
-    refetchInterval: 10000, // Poll every 10 seconds for new notifications
+    enabled: !!actor && !!identity && !isFetching,
   });
 }
 
-export function useGetUnreadNotificationsCount(user: Principal | null) {
+export function useGetBroadcastNotifications() {
   const { actor, isFetching } = useActor();
 
-  return useQuery<bigint>({
-    queryKey: ['unreadNotificationsCount', user?.toString()],
+  return useQuery<Notification[]>({
+    queryKey: ['broadcastNotifications'],
     queryFn: async () => {
-      if (!actor || !user) return BigInt(0);
-      const count = await actor.getUnreadNotificationsCount(user);
-      // Count unread broadcasts
-      const broadcasts = await actor.getBroadcastNotifications();
-      return count + BigInt(broadcasts.length);
+      if (!actor) return [];
+      return actor.getBroadcastNotifications();
     },
-    enabled: !!actor && !isFetching && !!user,
-    refetchInterval: 10000, // Poll every 10 seconds
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetUnreadNotificationsCount() {
+  const { actor, isFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  return useQuery<bigint>({
+    queryKey: ['unreadNotificationsCount', identity?.getPrincipal().toString()],
+    queryFn: async () => {
+      if (!actor || !identity) return BigInt(0);
+      return actor.getUnreadNotificationsCount(identity.getPrincipal());
+    },
+    enabled: !!actor && !!identity && !isFetching,
+    refetchInterval: 10000,
   });
 }
 
@@ -357,13 +319,12 @@ export function useAddBroadcastNotification() {
       return actor.addBroadcastNotification(content);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userNotifications'] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+      queryClient.invalidateQueries({ queryKey: ['broadcastNotifications'] });
     },
   });
 }
 
-// Restaurant Location
+// Restaurant Info
 export function useGetRestaurantLocation() {
   const { actor, isFetching } = useActor();
 
@@ -382,9 +343,9 @@ export function useSetRestaurantLocation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (newLocation: string) => {
+    mutationFn: async (location: string) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.setRestaurantLocation(newLocation);
+      return actor.setRestaurantLocation(location);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['restaurantLocation'] });
@@ -392,7 +353,6 @@ export function useSetRestaurantLocation() {
   });
 }
 
-// Restaurant Google Maps URL
 export function useGetRestaurantMapsUrl() {
   const { actor, isFetching } = useActor();
 
@@ -411,12 +371,36 @@ export function useSetRestaurantMapsUrl() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (newUrl: string) => {
+    mutationFn: async (url: string) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.setRestaurantMapsUrl(newUrl);
+      return actor.setRestaurantMapsUrl(url);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['restaurantMapsUrl'] });
     },
   });
+}
+
+// User Role
+export function useGetCallerUserRole() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<UserRole>({
+    queryKey: ['callerUserRole'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getCallerUserRole();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+// Helper hook to check if caller is admin
+export function useIsCallerAdmin() {
+  const { data: userRole, isLoading } = useGetCallerUserRole();
+  
+  return {
+    data: userRole === 'admin',
+    isLoading,
+  };
 }

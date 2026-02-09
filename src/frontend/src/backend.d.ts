@@ -122,6 +122,7 @@ export interface backendInterface {
     addBroadcastNotification(content: string): Promise<void>;
     addDocument(id: Uint8Array, content: ExternalBlob, name: string, size: bigint): Promise<void>;
     addMenuItem(name: string, description: string, priceInINR: bigint, category: string, image: ExternalBlob | null): Promise<bigint>;
+    addStarters(): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     clearUserNotifications(user: Principal): Promise<void>;
     createCheckoutSession(items: Array<ShoppingItem>, successUrl: string, cancelUrl: string): Promise<string>;

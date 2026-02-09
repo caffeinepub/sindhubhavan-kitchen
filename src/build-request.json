@@ -1,41 +1,107 @@
 {
   "kind": "build_request",
-  "title": "Update Contact page map to restaurant coordinates",
+  "title": "Revamp Zaika Kitchen UI with an eye-pleasing visual design (colors, typography, spacing)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the app’s configured Google Maps embed URL so the Contact page map pins the restaurant at coordinates (17.689073236620935, 83.23327778764002), without changing the existing map iframe styling or layout.",
-      "target": "backend",
+      "text": "Define and apply a cohesive, modern “warm culinary” visual theme across the site (color palette, typography, sizing, spacing, and component styling) to make the website look more polished and eye-pleasing, without changing app functionality.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "I want to make some changes on the contact page, actually the map. That map is not correct, so I want to pinpoint the correct location of my restaurant.",
-          "17.689073236620935, 83.23327778764002",
-          "This is my restaurant's exact location.",
-          "Please proceed."
+          "Make the website a good looking. Eye-pleasing colors, fonts, sizes, and everything.",
+          "Go ahead and do it now."
         ]
       },
       "acceptanceCriteria": [
-        "Opening the Contact page shows an embedded Google Map centered/pinned at latitude 17.689073236620935 and longitude 83.23327778764002.",
-        "The map iframe continues to render with the same dimensions and container styling as before (e.g., the existing 400px height and rounded/bordered container).",
-        "The Contact page does not show the 'Map location is not configured yet' alert when the backend provides the configured embed URL."
+        "A single coherent visual style is apparent across all pages (Header/Footer + main pages) with consistent color usage, typography, spacing, and radius/shadow treatment.",
+        "Theme avoids a generic default look by using a distinct warm, food-inspired palette (not blue/purple-dominant unless already present) and consistent typographic hierarchy (H1/H2/body/captions).",
+        "No user-facing text is changed away from English."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update the global theme tokens and base styles used by Tailwind/Shadcn (light + dark mode) so colors, contrast, borders, and backgrounds look premium and consistent across the app.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Eye-pleasing colors, fonts, sizes, and everything."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Light mode and dark mode both have readable contrast for background/foreground, muted text, borders, and primary/accent colors (no washed-out text on cards or gradients).",
+        "Global background, card, and border styling feels consistent across pages (e.g., subtle elevation/shadows and balanced border opacity).",
+        "Changes are implemented via the existing CSS variable theme approach (e.g., the variables in frontend/src/index.css) rather than page-by-page hardcoding only."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Improve typography across the site (font choices, scale, line-height, and tracking) and ensure consistent heading/body sizing on key pages (Home, Menu, Checkout, Contact, Orders/Notifications).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Eye-pleasing colors, fonts, sizes, and everything."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Headings and body text have a clear hierarchy: page titles are visually dominant, section headings are consistent, and muted/supporting text is legible.",
+        "Buttons, tabs, badges, and navigation text sizes feel balanced and consistent between mobile and desktop breakpoints.",
+        "No layout regressions: text does not overflow or truncate unexpectedly in header nav, cards, tabs, or checkout summary at common screen sizes."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Refine layout and visual polish of the main shared UI areas (Header, Footer, Layout container spacing) and key page sections (Home hero/feature cards/CTA, Menu item cards and category tabs, Checkout summary and cart list, Contact cards) to look more modern and “designed”.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Make the website a good looking. Eye-pleasing colors, fonts, sizes, and everything."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Header looks intentionally designed (balanced spacing, improved hover/active states, better alignment of logo/nav/actions) while preserving existing behavior (cart, notifications, admin link, mobile sheet).",
+        "Home page hero/sections look more premium via improved spacing, gradient usage, card styling, and button variants, while keeping the existing content and actions intact.",
+        "Menu page cards and tabs feel consistent and visually refined (card elevation/borders, image treatment, price emphasis, button styling) without changing menu filtering/add-to-cart behavior.",
+        "Checkout page readability is improved (clear grouping, spacing, and emphasis for totals) without changing the Stripe/WhatsApp flows."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui (immutable paths).",
-    "Keep user-facing text in English."
+    "Do not edit any files under frontend/src/components/ui (read-only UI components must be composed, not modified).",
+    "Do not edit files in frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (immutable paths).",
+    "Keep existing app functionality, routes, and backend interactions unchanged; this is a visual/UX polish pass only."
   ],
   "nonGoals": [
-    "Redesigning the Contact page UI or changing its layout.",
-    "Changing restaurant hours, phone number, WhatsApp behavior, or other contact details.",
-    "Adding new map providers or integrations beyond the existing Google Maps iframe embed."
+    "Adding new product features (e.g., new pages, new ordering logic, new admin tools).",
+    "Changing authentication behavior (Internet Identity) or backend data models.",
+    "Introducing third-party auth providers or external UI frameworks beyond what the project already uses."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [
+      "Prefer a warm, modern, food-inspired visual theme with eye-pleasing colors, refined typography, and consistent spacing."
+    ],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

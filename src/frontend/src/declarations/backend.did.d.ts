@@ -135,6 +135,7 @@ export interface _SERVICE {
     [string, string, bigint, string, [] | [ExternalBlob]],
     bigint
   >,
+  'addStarters' : ActorMethod<[], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'clearUserNotifications' : ActorMethod<[Principal], undefined>,
   'createCheckoutSession' : ActorMethod<

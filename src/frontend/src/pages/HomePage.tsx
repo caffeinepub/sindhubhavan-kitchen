@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { UtensilsCrossed, Clock, Award, Heart } from 'lucide-react';
+import { UtensilsCrossed, Clock, Award, Heart, Sparkles } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { generateWhatsAppUrl } from '../utils/whatsapp';
 
@@ -15,30 +15,30 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-accent/10 py-20 md:py-32">
+      <section className="relative gradient-hero py-24 md:py-36">
         <div className="container">
-          <div className="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <UtensilsCrossed className="h-4 w-4" />
+          <div className="flex flex-col items-center text-center gap-8 max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 text-primary text-sm font-semibold border border-primary/20 shadow-sm">
+              <Sparkles className="h-4 w-4" />
               Welcome to Zaika Kitchen
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight leading-tight">
               Delicious Food,
               <br />
               <span className="text-primary">Delivered Fresh</span>
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
               Experience culinary excellence with our carefully crafted menu. From appetizers to desserts, every dish is made with passion and the finest ingredients.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-4">
-              <Button size="lg" onClick={() => navigate({ to: '/menu' })} className="gap-2">
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <Button size="lg" onClick={() => navigate({ to: '/menu' })} className="gap-2 shadow-warm text-base font-semibold px-8 py-6">
                 <UtensilsCrossed className="h-5 w-5" />
                 View Menu
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate({ to: '/menu' })}>
+              <Button size="lg" variant="outline" onClick={() => navigate({ to: '/menu' })} className="text-base font-semibold px-8 py-6 border-2 hover:bg-primary/5">
                 Order Now
               </Button>
-              <Button size="lg" variant="outline" onClick={handleWhatsAppClick} className="gap-2">
+              <Button size="lg" variant="outline" onClick={handleWhatsAppClick} className="gap-2 text-base font-semibold px-8 py-6 border-2 hover:bg-primary/5">
                 <SiWhatsapp className="h-5 w-5" />
                 Chat on WhatsApp
               </Button>
@@ -48,44 +48,44 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
+      <section className="py-20 md:py-28 bg-muted/20">
         <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose Us</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-5">Why Choose Us</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               We're committed to providing the best dining experience with quality food and exceptional service.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="border-2 hover:border-primary/50 transition-colors">
-              <CardContent className="pt-6 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
-                  <Award className="h-6 w-6" />
+            <Card className="border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-warm group">
+              <CardContent className="pt-8 pb-8 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <Award className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Premium Quality</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-display text-2xl font-semibold mb-3">Premium Quality</h3>
+                <p className="text-muted-foreground leading-relaxed">
                   Only the finest ingredients sourced from trusted suppliers for exceptional taste.
                 </p>
               </CardContent>
             </Card>
-            <Card className="border-2 hover:border-primary/50 transition-colors">
-              <CardContent className="pt-6 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
-                  <Clock className="h-6 w-6" />
+            <Card className="border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-warm group">
+              <CardContent className="pt-8 pb-8 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <Clock className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Fast Service</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-display text-2xl font-semibold mb-3">Fast Service</h3>
+                <p className="text-muted-foreground leading-relaxed">
                   Quick preparation and delivery without compromising on quality or taste.
                 </p>
               </CardContent>
             </Card>
-            <Card className="border-2 hover:border-primary/50 transition-colors">
-              <CardContent className="pt-6 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
-                  <Heart className="h-6 w-6" />
+            <Card className="border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-warm group">
+              <CardContent className="pt-8 pb-8 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-5 group-hover:scale-110 transition-transform duration-300">
+                  <Heart className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Made with Love</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-display text-2xl font-semibold mb-3">Made with Love</h3>
+                <p className="text-muted-foreground leading-relaxed">
                   Every dish is prepared with care and passion by our experienced chefs.
                 </p>
               </CardContent>
@@ -95,15 +95,15 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-20 md:py-28">
         <div className="container">
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-2">
-            <CardContent className="py-12 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Order?</h2>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <Card className="gradient-warm border-2 border-primary/20 shadow-warm">
+            <CardContent className="py-16 text-center">
+              <h2 className="font-display text-4xl md:text-5xl font-bold mb-5">Ready to Order?</h2>
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
                 Browse our delicious menu and place your order today. Fresh food, delivered to your door.
               </p>
-              <Button size="lg" onClick={() => navigate({ to: '/menu' })} className="gap-2">
+              <Button size="lg" onClick={() => navigate({ to: '/menu' })} className="gap-2 shadow-warm text-base font-semibold px-8 py-6">
                 <UtensilsCrossed className="h-5 w-5" />
                 Explore Menu
               </Button>
