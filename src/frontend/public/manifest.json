@@ -1,0 +1,27 @@
+{
+  "name": "Zaika Kitchen",
+  "short_name": "Zaika Kitchen",
+  "description": "Order delicious food from Zaika Kitchen, Near GVMC Park, Sriharipuram, Visakhapatnam - Easy online ordering and payment",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fef3c7",
+  "theme_color": "#d97706",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/assets/generated/restaurant-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/generated/restaurant-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "shopping"],
+  "screenshots": []
+}

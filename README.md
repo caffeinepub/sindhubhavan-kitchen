@@ -1,2 +1,3 @@
-# sindhubhavan-kitchen
-Exported from Caffeine project: Replace Curry category menu items using uploaded photo (Curry.PNG)
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

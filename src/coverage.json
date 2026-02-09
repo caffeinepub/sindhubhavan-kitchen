@@ -1,0 +1,63 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-07T11:42:50.990Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Add an admin-only backend operation to replace all menu items in a single category with a provided list of items (name, description, priceInINR), leaving all other categories untouched.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Update the backend menu data for the \"Curry\" category to match the items and prices extracted from the uploaded image Curry.PNG (clear existing Curry items; insert the new list below; leave all other categories unchanged). New Curry items to insert (description can be empty string): 1) Dal Fry — ₹80, 2) Dal Tadqa — ₹90, 3) Mixed Veg — ₹99, 4) Aloo Gobhi — ₹99, 5) Aloo Mutter — ₹99, 6) Aloo Jeera — ₹99, 7) Channa Masala — ₹99, 8) Aloo Bhindi Fry — ₹99, 9) Aloo Palak — ₹99, 10) Veg Kadhai — ₹99, 11) Veg Palao — ₹99, 12) Tomato Masala — ₹99, 13) Tomato Fry — ₹99, 14) Mushroom Masala — ₹119, 15) Mushroom Mutter — ₹119, 16) Veg Kolapuri — ₹119, 17) Veg Do Pyaza — ₹119, 18) Sev Tomato — ₹119, 19) Kaju Tomato — ₹119, 20) Veg Jaipuri — ₹119, 21) Mutter Paneer — ₹129, 22) Paneer Butter Masala — ₹129, 23) Tomato Paneer — ₹129, 24) Paneer Kolapuri — ₹139, 25) Paneer Kadhai — ₹139, 26) Palak Paneer — ₹139, 27) Paneer do pyaza — ₹149, 28) Kaju Paneer — ₹149, 29) Paneer Bhurji — ₹159, 30) Shahi Paneer — ₹169, 31) Paneer Hyderabadi — ₹179, 32) Methi Chaman — ₹199.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Replace the existing simulated \"Add Menu Item\" behavior in the Admin \"Menu Management\" tab with real backend mutations, and add a bulk replace UI that lets an admin replace all items in a selected category (default \"Curry\") by submitting a parsed list (name, price, optional description) to the backend replace-category operation.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/pages/MenuPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/AdminPage.tsx",
+          "frontend/src/pages/MenuPage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/AdminPage.tsx",
+    "frontend/src/pages/MenuPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

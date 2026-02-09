@@ -1,0 +1,88 @@
+{
+  "kind": "build_request",
+  "title": "Replace Curry category menu items using uploaded photo (Curry.PNG)",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Add an admin-only backend operation to replace all menu items in a single category with a provided list of items (name, description, priceInINR), leaving all other categories untouched.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-1"
+        ],
+        "quotes": [
+          "first of all remove all existing items from Category \"Curry\" and add all item from my photo"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling the operation as a non-admin traps with an Unauthorized message.",
+        "Calling the operation with category \"Curry\" removes/archives all existing Curry items so they no longer appear in getMenuItemsByCategory(\"Curry\") results.",
+        "Calling the operation with category \"Curry\" does not modify items in other categories.",
+        "The operation adds the provided items as active Curry menu items and returns successfully.",
+        "After the operation, getMenuItemsByCategory(\"Curry\") returns exactly the newly-provided items (order does not need to be guaranteed unless explicitly implemented)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update the backend menu data for the \"Curry\" category to match the items and prices extracted from the uploaded image Curry.PNG (clear existing Curry items; insert the new list below; leave all other categories unchanged). New Curry items to insert (description can be empty string): 1) Dal Fry — ₹80, 2) Dal Tadqa — ₹90, 3) Mixed Veg — ₹99, 4) Aloo Gobhi — ₹99, 5) Aloo Mutter — ₹99, 6) Aloo Jeera — ₹99, 7) Channa Masala — ₹99, 8) Aloo Bhindi Fry — ₹99, 9) Aloo Palak — ₹99, 10) Veg Kadhai — ₹99, 11) Veg Palao — ₹99, 12) Tomato Masala — ₹99, 13) Tomato Fry — ₹99, 14) Mushroom Masala — ₹119, 15) Mushroom Mutter — ₹119, 16) Veg Kolapuri — ₹119, 17) Veg Do Pyaza — ₹119, 18) Sev Tomato — ₹119, 19) Kaju Tomato — ₹119, 20) Veg Jaipuri — ₹119, 21) Mutter Paneer — ₹129, 22) Paneer Butter Masala — ₹129, 23) Tomato Paneer — ₹129, 24) Paneer Kolapuri — ₹139, 25) Paneer Kadhai — ₹139, 26) Palak Paneer — ₹139, 27) Paneer do pyaza — ₹149, 28) Kaju Paneer — ₹149, 29) Paneer Bhurji — ₹159, 30) Shahi Paneer — ₹169, 31) Paneer Hyderabadi — ₹179, 32) Methi Chaman — ₹199.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-1"
+        ],
+        "quotes": [
+          "the photo has items and prices",
+          "build it now"
+        ]
+      },
+      "acceptanceCriteria": [
+        "After deployment, getMenuItemsByCategory(\"Curry\") returns 32 active items matching the names and prices listed in this requirement.",
+        "No other categories' menu items are changed by this update."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Replace the existing simulated \"Add Menu Item\" behavior in the Admin \"Menu Management\" tab with real backend mutations, and add a bulk replace UI that lets an admin replace all items in a selected category (default \"Curry\") by submitting a parsed list (name, price, optional description) to the backend replace-category operation.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-1"
+        ],
+        "quotes": [
+          "can u update menu items from a photo?",
+          "remove all existing items from Category \"Curry\" and add all item from my photo"
+        ]
+      },
+      "acceptanceCriteria": [
+        "In AdminPage, submitting the Add Menu Item form calls the backend addMenuItem and shows success/failure toasts based on the real result.",
+        "AdminPage provides a bulk replace action that (a) selects a category (including \"Curry\"), (b) previews the items to be inserted, and (c) requires an explicit confirmation before replacing the category.",
+        "After a successful bulk replace, React Query invalidates/refetches menu queries so the Menu page reflects the updated Curry list without a manual refresh.",
+        "User-facing text is in English."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single-actor Motoko canister (all logic in backend/main.mo).",
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui; compose existing UI components instead."
+  ],
+  "nonGoals": [
+    "Implementing third-party authentication beyond Internet Identity.",
+    "Adding external databases or non-Internet-Computer backend services.",
+    "Real-time websockets-based menu syncing."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

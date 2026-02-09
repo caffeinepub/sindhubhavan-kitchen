@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "App supports updating menu items by extracting items and prices from a uploaded menu photo, specifically to replace items within a single category (e.g., Curry) while leaving other categories unchanged.",
+  "architectural_notes": [
+    "Support OCR/vision-based parsing of menu photos to structured menu items (name, price) with category-scoped replace behavior (clear category then insert extracted items)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-replace-the-existing-simulated-add-menu-item-behavior-in-the-admin-menu-management-tab-with-real-backend-mutations-and-add-a-bulk-replace-ui-that-lets-an-admin-replace-all-items-in-a-selected-category-default-curry-by-submitting-a-parsed-list-name-price-optional-description-to-the-backend-replace-category-operation",
+      "title": "Replace the existing simulated \"Add Menu Item\" behavior in the Admin \"Menu Management\" tab with real backend mutations, and add a bulk replace UI that lets an admin replace all items in a selected category (default \"Curry\") by submitting a parsed list (name, price, optional description) to the backend replace-category operation.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Extract menu items and prices from an uploaded photo and replace all existing items in a specified category (e.g., clear 'Curry' then add extracted items) while leaving other categories unchanged.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add an admin-only backend operation to replace all menu items in a single category with a provided list of items (name, description, priceInINR), leaving all other categories untouched.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Update the backend menu data for the \"Curry\" category to match the items and prices extracted from the uploaded image Curry.PNG (clear existing Curry items; insert the new list below; leave all other categories unchanged). New Curry items to insert (description can be empty string): 1) Dal Fry — ₹80, 2) Dal Tadqa — ₹90, 3) Mixed Veg — ₹99, 4) Aloo Gobhi — ₹99, 5) Aloo Mutter — ₹99, 6) Aloo Jeera — ₹99, 7) Channa Masala — ₹99, 8) Aloo Bhindi Fry — ₹99, 9) Aloo Palak — ₹99, 10) Veg Kadhai — ₹99, 11) Veg Palao — ₹99, 12) Tomato Masala — ₹99, 13) Tomato Fry — ₹99, 14) Mushroom Masala — ₹119, 15) Mushroom Mutter — ₹119, 16) Veg Kolapuri — ₹119, 17) Veg Do Pyaza — ₹119, 18) Sev Tomato — ₹119, 19) Kaju Tomato — ₹119, 20) Veg Jaipuri — ₹119, 21) Mutter Paneer — ₹129, 22) Paneer Butter Masala — ₹129, 23) Tomato Paneer — ₹129, 24) Paneer Kolapuri — ₹139, 25) Paneer Kadhai — ₹139, 26) Palak Paneer — ₹139, 27) Paneer do pyaza — ₹149, 28) Kaju Paneer — ₹149, 29) Paneer Bhurji — ₹159, 30) Shahi Paneer — ₹169, 31) Paneer Hyderabadi — ₹179, 32) Methi Chaman — ₹199.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Replace Curry category menu items using uploaded photo (Curry.PNG)",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
