@@ -1,34 +1,6 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Admin Menu Management: real backend mutations + bulk category replace",
-  "requirements": [
-    {
-      "id": "REQ-3",
-      "summary": "Replace the Admin \"Menu Management\" simulated add-item with real backend mutations and add a bulk category replace UI (default Curry) with preview + explicit confirmation + React Query refetch.",
-      "acceptanceCriteria": [
-        "In AdminPage, submitting the Add Menu Item form calls the backend addMenuItem and shows success/failure toasts based on the real result.",
-        "AdminPage provides a bulk replace action that (a) selects a category (including \"Curry\"), (b) previews the items to be inserted, and (c) requires an explicit confirmation before replacing the category.",
-        "After a successful bulk replace, React Query invalidates/refetches menu queries so the Menu page reflects the updated Curry list without a manual refresh.",
-        "User-facing text is in English."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add React Query mutations for real menu admin actions: useAddMenuItem() (calls backend addMenuItem) and useReplaceCategoryMenuItems() (calls backend replaceCategoryMenuItems) with proper invalidation of menu query keys so the Menu page updates after changes. Ensure errors (including authorization traps) are surfaced to the UI. Use the authorization component’s frontend guidance for handling Unauthorized errors gracefully; verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/AdminPage.tsx",
-          "operation": "modify",
-          "description": "In the Admin \"Menu Management\" tab, replace the simulated Add Menu Item behavior with useAddMenuItem() and show success/failure toasts based on the real result. Add a bulk replace section: category selector (default \"Curry\"), multiline input for a parsed list (name, price, optional description), a preview table/card of parsed items, and an explicit confirmation step (e.g., using existing shadcn/ui dialog/alert components) before calling useReplaceCategoryMenuItems(). Ensure all user-facing text is English and keep admin-only access guarded by existing role checks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/MenuPage.tsx",
-          "operation": "modify",
-          "description": "Replace mock menu data rendering with backend-backed menu queries (via hooks in frontend/src/hooks/useQueries.ts), and render category-filtered results from real menu items. Ensure it reacts to React Query invalidation so that after bulk replace the Curry list updates without manual refresh. Preserve existing category tabs and cart add-to-cart behavior. Verify the component's usage instructions before implementing."
-        }
-      ]
-    }
-  ]
+  "title": "Update Contact page map to restaurant coordinates (frontend-only)",
+  "requirements": []
 }

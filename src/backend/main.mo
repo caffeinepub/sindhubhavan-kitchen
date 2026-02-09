@@ -17,7 +17,7 @@ import Stripe "stripe/stripe";
 import MixinAuthorization "authorization/MixinAuthorization";
 import OutCall "http-outcalls/outcall";
 import Array "mo:core/Array";
-import Migration "migration"; // Added for migration
+import Migration "migration";
 
 (with migration = Migration.run)
 actor {
@@ -27,7 +27,7 @@ actor {
   include MixinStorage();
 
   var restaurantLocation : Text = "Opposite Coromandal Gate, Sriharipuram, Visakhapatnam, Andhra Pradesh-530011";
-  var googleMapsUrl : Text = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119520.75554216439!2d83.19362318576921!3d17.686524536353033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3943749a0c4dbd%3A0x326691e810a2e8b8!2sVisakhapatnam%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1716310598853!5m2!1sen!2sin";
+  var googleMapsUrl : Text = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d478.7857271870216!2d83.23327778764002!3d17.689073236620935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3943425688726b%3A0x2f18ed0d5ac3db17!2sSriharipuram%2C%20Visakhapatnam%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1716310598853!5m2!1sen!2sin";
 
   // Types
   public type OrderStatus = {
@@ -791,4 +791,3 @@ actor {
     googleMapsUrl := newUrl;
   };
 };
-

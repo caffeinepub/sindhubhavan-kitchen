@@ -1,29 +1,4 @@
 {
   "kind": "feature_evidence_report",
-  "features": [
-    {
-      "featureId": "feature-replace-the-existing-simulated-add-menu-item-behavior-in-the-admin-menu-management-tab-with-real-backend-mutations-and-add-a-bulk-replace-ui-that-lets-an-admin-replace-all-items-in-a-selected-category-default-curry-by-submitting-a-parsed-list-name-price-optional-description-to-the-backend-replace-category-operation",
-      "featureTitle": "Replace the existing simulated \"Add Menu Item\" behavior in the Admin \"Menu Management\" tab with real backend mutations, and add a bulk replace UI that lets an admin replace all items in a selected category (default \"Curry\") by submitting a parsed list (name, price, optional description) to the backend replace-category operation.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/AdminPage.tsx",
-        "frontend/src/pages/MenuPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "stripe@3.0.0",
-        "http-outcalls@3.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    }
-  ]
+  "features": []
 }

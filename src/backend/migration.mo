@@ -1,8 +1,25 @@
 import Map "mo:core/Map";
 import Nat "mo:core/Nat";
+import Set "mo:core/Set";
+import Blob "mo:core/Blob";
+import Time "mo:core/Time";
 
 module {
-  type MenuItem = {
+  type OldRestaurantState = {
+    var restaurantLocation : Text;
+    var googleMapsUrl : Text;
+    menuItems : Map.Map<Nat, OldMenuItem>;
+    orders : Map.Map<Nat, OldOrder>;
+    users : Map.Map<Principal, Set.Set<Nat>>;
+    documents : Map.Map<Blob, Document>;
+    notifications : Map.Map<Nat, Notification>;
+    var nextMenuItemId : Nat;
+    var nextOrderId : Nat;
+    var nextNotificationId : Nat;
+    var stripeConfig : ?StripeConfiguration;
+  };
+
+  type OldMenuItem = {
     id : Nat;
     name : Text;
     description : Text;
@@ -12,65 +29,90 @@ module {
     isActive : Bool;
   };
 
-  type OldActor = {
-    menuItems : Map.Map<Nat, MenuItem>;
+  type OldOrderItem = {
+    menuItemId : Nat;
+    quantity : Nat;
+    priceInINR : Nat;
   };
 
-  type NewActor = {
-    menuItems : Map.Map<Nat, MenuItem>;
+  type OldOrderStatus = {
+    #pending;
+    #preparing;
+    #outForDelivery;
+    #delivered;
   };
 
-  public func run(old : OldActor) : NewActor {
-    let filteredMenuItems = old.menuItems.filter(
-      func(_id, item) {
-        item.category != "Curry";
-      }
-    );
+  type OldOrder = {
+    id : Nat;
+    user : Principal;
+    items : [OldOrderItem];
+    totalAmountInINR : Nat;
+    status : OldOrderStatus;
+    created : Time.Time;
+    paymentId : ?Text;
+  };
 
-    let updatedMenuItems = Map.empty<Nat, MenuItem>();
-    for (entry in filteredMenuItems.entries()) {
-      updatedMenuItems.add(entry.0, entry.1);
+  type Document = {
+    name : Text;
+    owner : Principal;
+    size : Nat;
+    content : Blob;
+  };
+
+  type NotificationType = {
+    #orderPlaced;
+    #orderStatusUpdated;
+    #paymentConfirmation;
+    #paymentFailure;
+    #broadcast;
+  };
+
+  type Notification = {
+    id : Nat;
+    user : ?Principal;
+    content : Text;
+    timestamp : Time.Time;
+    isRead : Bool;
+    notificationType : NotificationType;
+    orderId : ?Nat;
+    orderStatus : ?OldOrderStatus;
+  };
+
+  type StripeConfiguration = {
+    secretKey : Text;
+    allowedCountries : [Text];
+  };
+
+  type NewRestaurantState = {
+    var restaurantLocation : Text;
+    var googleMapsUrl : Text;
+    menuItems : Map.Map<Nat, OldMenuItem>;
+    orders : Map.Map<Nat, OldOrder>;
+    users : Map.Map<Principal, Set.Set<Nat>>;
+    documents : Map.Map<Blob, Document>;
+    notifications : Map.Map<Nat, Notification>;
+    var nextMenuItemId : Nat;
+    var nextOrderId : Nat;
+    var nextNotificationId : Nat;
+    var stripeConfig : ?StripeConfiguration;
+  };
+
+  public func run(old : OldRestaurantState) : NewRestaurantState {
+    var newRestaurantLocation = old.restaurantLocation;
+    var newGoogleMapsUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d478.7857271870216!2d83.23327778764002!3d17.689073236620935!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3943425688726b%3A0x2f18ed0d5ac3db17!2sSriharipuram%2C%20Visakhapatnam%2C%20Andhra%20Pradesh!5e0!3m2!1sen!2sin!4v1716310598853!5m2!1sen!2sin";
+
+    {
+      var restaurantLocation = newRestaurantLocation;
+      var googleMapsUrl = newGoogleMapsUrl;
+      menuItems = old.menuItems;
+      orders = old.orders;
+      users = old.users;
+      documents = old.documents;
+      notifications = old.notifications;
+      var nextMenuItemId = old.nextMenuItemId;
+      var nextOrderId = old.nextOrderId;
+      var nextNotificationId = old.nextNotificationId;
+      var stripeConfig = old.stripeConfig;
     };
-
-    let curryItems : [MenuItem] = [
-      { id = 0; name = "Dal Fry"; description = ""; priceInINR = 80; category = "Curry"; image = null; isActive = true },
-      { id = 1; name = "Dal Tadqa"; description = ""; priceInINR = 90; category = "Curry"; image = null; isActive = true },
-      { id = 2; name = "Mixed Veg"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 3; name = "Aloo Gobhi"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 4; name = "Aloo Mutter"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 5; name = "Aloo Jeera"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 6; name = "Channa Masala"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 7; name = "Aloo Bhindi Fry"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 8; name = "Aloo Palak"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 9; name = "Veg Kadhai"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 10; name = "Veg Palao"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 11; name = "Tomato Masala"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 12; name = "Tomato Fry"; description = ""; priceInINR = 99; category = "Curry"; image = null; isActive = true },
-      { id = 13; name = "Mushroom Masala"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 14; name = "Mushroom Mutter"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 15; name = "Veg Kolapuri"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 16; name = "Veg Do Pyaza"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 17; name = "Sev Tomato"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 18; name = "Kaju Tomato"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 19; name = "Veg Jaipuri"; description = ""; priceInINR = 119; category = "Curry"; image = null; isActive = true },
-      { id = 20; name = "Mutter Paneer"; description = ""; priceInINR = 129; category = "Curry"; image = null; isActive = true },
-      { id = 21; name = "Paneer Butter Masala"; description = ""; priceInINR = 129; category = "Curry"; image = null; isActive = true },
-      { id = 22; name = "Tomato Paneer"; description = ""; priceInINR = 129; category = "Curry"; image = null; isActive = true },
-      { id = 23; name = "Paneer Kolapuri"; description = ""; priceInINR = 139; category = "Curry"; image = null; isActive = true },
-      { id = 24; name = "Paneer Kadhai"; description = ""; priceInINR = 139; category = "Curry"; image = null; isActive = true },
-      { id = 25; name = "Palak Paneer"; description = ""; priceInINR = 139; category = "Curry"; image = null; isActive = true },
-      { id = 26; name = "Paneer do pyaza"; description = ""; priceInINR = 149; category = "Curry"; image = null; isActive = true },
-      { id = 27; name = "Kaju Paneer"; description = ""; priceInINR = 149; category = "Curry"; image = null; isActive = true },
-      { id = 28; name = "Paneer Bhurji"; description = ""; priceInINR = 159; category = "Curry"; image = null; isActive = true },
-      { id = 29; name = "Shahi Paneer"; description = ""; priceInINR = 169; category = "Curry"; image = null; isActive = true },
-      { id = 30; name = "Paneer Hyderabadi"; description = ""; priceInINR = 179; category = "Curry"; image = null; isActive = true },
-      { id = 31; name = "Methi Chaman"; description = ""; priceInINR = 199; category = "Curry"; image = null; isActive = true },
-    ];
-
-    for (item in curryItems.values()) {
-      updatedMenuItems.add(item.id, item);
-    };
-
-    { menuItems = updatedMenuItems };
   };
 };
